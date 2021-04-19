@@ -85,10 +85,58 @@ hist(e,20);
 subplot 212
 hist(e2,20);
 
+%% V 2 c)
 
+[data,fs] = audioread("musica_16_16.wav");
+[data2,fs2] = audioread("sonidos_voz_16_16.wav");
 
+N1 = bitsANiveles(2); % 12,8,4,2,1 bits
+N2 = bitsANiveles(12); % 12,8,4,2,1 bits
 
+[dc1, e1] = cuantiza2(data,N1); % 2bits | musica
+[dc2, e2] = cuantiza2(data2,N1); %2bits | voz
 
+[dc12, e12] = cuantiza2(data,N2); % 12bits | musica
+[dc22, e22] = cuantiza2(data2,N2); %12bits | voz
+
+%[r , l] = xcorr( e1 , 200, 'unbiased' ); % autcorrelacion
+%plot(l,r); % autocorrelación del error 
+
+[r1,l1] = xcorr(e1, data, 200, 'unbiased');  % 2 bit | musica
+[r1e , l1e] = xcorr( e1 , 200, 'unbiased' ); % autcorrelacion
+
+[r2,l2] = xcorr(e2, data2, 200, 'unbiased');  % 2 bit | voz
+[r2e , l2e] = xcorr( e2 , 200, 'unbiased' ); % autcorrelacion
+
+[r3,l3] = xcorr(e12, data, 200, 'unbiased');  % 12 bit | musica
+[r3e , l3e] = xcorr( e12 , 200, 'unbiased' ); % autcorrelacion
+
+[r4,l4] = xcorr(e22, data2, 200, 'unbiased');  % 12 bit | voz
+[r4e,l4e] = xcorr( e22 , 200, 'unbiased' ); % autcorrelacion
+
+figure(1)
+plot(l1,r1);
+hold on;
+plot(l1e,r1e);
+title("musica 2 bit");
+%
+figure(2)
+plot(l2,r2);
+hold on;
+plot(l2e,r2e);
+title("voz 2 bit");
+%
+figure(3)
+plot(l3,r3);
+hold on;
+plot(l3e,r3e);
+title("musica 12 bit");
+%
+figure(4)
+plot(l4,r4);
+hold on;
+plot(l4e,r4e);
+title("voz 2 bit");
 
 %% FUNCIONES
 
