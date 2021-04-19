@@ -79,13 +79,7 @@ N = bitsANiveles(2); % 12,8,4,2,1 bits
 [dc, e] = cuantiza2(data,N);
 [dc2, e2] = cuantiza2(data2,N);
 
-subplot 211
-hist(e,20);
-
-subplot 212
-hist(e2,20);
-
-
+subplot 
 
 
 
