@@ -36,15 +36,16 @@ spectrogram(aliasing_test, 256, [], [], Fs, 'yaxis');
 %los archivos de audio
 
     
-[data,fs] = audioread("musica_16_16.waw");
+[data,fs] = audioread("musica_16_16.wav");
+[data2,fs2] = audioread("sonidos_voz_16_16.wav");
 
 N = bitsANiveles(1); % 12,8,4,2,1 bits
 
 c = cuantiza(data,N);
-%c2 = cuantiza(data2,N);
-soundsc(c,fs);
-%soundsc(c2,fs);                                
-%soundsc(data2,fs);
+c2 = cuantiza(data2,N);
+%soundsc(data,fs);
+soundsc(c2,fs);                                
+%soundsc(data2,fs2);
 
 function N = bitsANiveles(b)
     N = 2*exp(b);
