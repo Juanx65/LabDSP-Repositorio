@@ -31,17 +31,20 @@ spectrogram(aliasing_test, 256, [], [], Fs, 'yaxis');
 % teorema de nyquist diria q solo se puede bajar la tasa de muestreo a 10k
 % sps
 
-%% V
+%% V 1)
+%OBS:  puedes usar [data,ds] = audioread("musica_16_16.waw"); % para abrir
+%los archivos de audio
 
-%1)
+    
+[data,fs] = audioread("musica_16_16.waw");
 
-c = cuantiza(data,30);
-c2 = cuantiza(data2,50);
-%soundsc(c,fs);
-soundsc(c2,fs);
+N = bitsANiveles(1); % 12,8,4,2,1 bits
+
+c = cuantiza(data,N);
+%c2 = cuantiza(data2,N);
+soundsc(c,fs);
+%soundsc(c2,fs);                                
 %soundsc(data2,fs);
-
-N = bitsANiveles(12); % 
 
 function N = bitsANiveles(b)
     N = 2*exp(b);
@@ -51,6 +54,9 @@ function c = cuantiza(x,N)
     S1 =  (x-min(x))/delta;
     c = round(S1);
 end
+
+%% V 2)
+
 
 
 
