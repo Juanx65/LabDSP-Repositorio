@@ -1,4 +1,8 @@
 %% IV
+load('aliasing_test_16_16.mat','aliasing_test');
+load('aliasing_test_16_16.mat','Fs');
+
+
 N = length(aliasing_test);
 n = 1:N;
 
@@ -17,7 +21,7 @@ for c = n
 end
 
 %soundsc(aliasing_test,Fs);
-%soundsc(S1,Fs/2);
+soundsc(S1,Fs/2);
 %soundsc(S2,Fs/3);
 
 %1) a medida que se aumenta el downsamplig ( disminuir el numero de
@@ -44,7 +48,7 @@ N = bitsANiveles(1); % 12,8,4,2,1 bits
 c = cuantiza(data,N);
 c2 = cuantiza(data2,N);
 %soundsc(data,fs);
-%soundsc(c2,fs);                                
+%soundsc(c,fs);                                
 %soundsc(data2,fs2);
 
 %% V 2 a)
@@ -52,7 +56,7 @@ c2 = cuantiza(data2,N);
 [data,fs] = audioread("musica_16_16.wav");
 [data2,fs2] = audioread("sonidos_voz_16_16.wav");
 
-N = bitsANiveles(2); % 12,8,4,2,1 bits
+N = bitsANiveles(12); % 12,8,4,2,1 bits
 [dc, e] = cuantiza2(data,N);
 [dc2, e2] = cuantiza2(data2,N);
 
