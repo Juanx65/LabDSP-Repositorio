@@ -157,6 +157,32 @@ dc02 = cuantiza(data2,N);
 %soundsc(dc2,fs);
 
 %% VI 
+[dataVI,fs]=audioread("aliasing_test_16_16.wav", 'native');
+N=int16(161);
+x=dataVI(1:N);
+ww=blackman(N)*2^15;
+w=int16(ww);
+y=int32(w).*int32(x);
+y=int16(y*2^(-15));
+
+%whos('w');
+%h=blackman(N);
+%whos('h');
+
+%% VI 2
+[dataVI,fs]=audioread("aliasing_test_16_16.wav");
+N=161;
+x=dataVI(1:N);
+w=blackman(N);
+y=w.*x;
+
+plot(y,'.')
+hold on
+plot(x,'x')
+plot(w,'o')
+%whos('w');
+%h=blackman(N);
+%whos('h');
 
 
 %% FUNCIONES
