@@ -138,7 +138,39 @@ hold on;
 plot(l4e,r4e);
 title("voz 2 bit");
 
+%% V 3)
+
+[data,fs] = audioread("musica_16_16.wav");
+[data2,fs2] = audioread("sonidos_voz_16_16.wav");
+
+N = bitsANiveles(2); % 12,8,4,2,1 bits
+
+dc1 = cuantiza_dither(data, N); % 2bits | musica
+dc2 = cuantiza_dither(data2,N); %2bits | voz
+
+dc01 = cuantiza(data,N);
+dc02 = cuantiza(data2,N);
+
+
+%soundsc(data2,fs);
+%soundsc(dc02,fs);
+%soundsc(dc2,fs);
+
+%% VI 
+
+
 %% FUNCIONES
+
+%V 3)
+function c = cuantiza_dither(x,N)
+    delta = (max(x)-min(x))/(N-1);
+    %J = imnoise(x,'gaussian',0 , ( 0.25*delta)^2 );
+    W = (delta*0.25).*rand(length(x),1);
+    J = x + W;
+    deltaJ = (max(J)-min(J))/(N-1);
+    S1 =  (J-min(J))/deltaJ;
+    c = round(S1);
+end
 
 %V 1) 
 function N = bitsANiveles(b)
@@ -158,5 +190,6 @@ function [y, e] = cuantiza2(x,N)
     y = S11.*delta + min(x);
     e = y - x;
 end
+
 
 
