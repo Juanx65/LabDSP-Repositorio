@@ -87,12 +87,15 @@ ss = zeros(1,100001);
 ss2 = zeros(1,100001);
 for k = 1:6
     ss = ss+sin(2*pi*(2*k-1)*220*t)/(2*k-1);
-    ss2 = ss2+sin(2*pi*(2*k-1)*220*t+2*pi*rand(1,1));
+    ss2 = ss2+sin(2*pi*(2*k-1)*220*t+2*pi*rand(1,1))/(2*k-1);
 end
 subplot 121
 plot(t(1:800),ss(1:800));
 subplot 122
 plot(t(1:800),ss2(1:800));
+
+%sounds(ss,100000);
+%sounds(ss2,100000);
 
 %% 3.4
 random = 2*rand(1,5000)-1;
@@ -111,13 +114,33 @@ plot(t2(1:0.01*100000),s2_rand_2(1:0.01*100000));
 subplot 224
 plot(t2(1:0.01*100000),s2_2(1:0.01*100000));
 
-%%
-t=0:0.001:0.06;
+%% 3.5
+fs=100000;
+t=0:1/fs:0.5-0.5/fs;
+rdm=2*rand(1,0.5*fs)-1;
+sx=sin(2*pi*500*t);
+sx2=sx+rdm;
+subplot 211
+plot(t(1:0.01*fs),sx(1:0.01*fs));
+subplot 212
+plot(t(1:0.01*fs),sx2(1:0.01*fs));
 
-sx=sin(2*pi*50*t);
+%% 3.5 
+sx_var_amp = sx.*(rand(1,0.5*fs)*0.5+0.5);
+subplot 211
+plot(t(1:0.01*fs),sx(1:0.01*fs));
+subplot 212
+plot(t(1:0.01*fs),sx_var_amp(1:0.01*fs));
 
-plot(t,sx);
+%% 3.6
+sx_var_fas = sin(2*pi*500*t + pi*(rand(1,0.5*fs)-0.5));
+subplot 211
+plot(t(1:0.01*fs),sx(1:0.01*fs));
+subplot 212
+plot(t(1:0.01*fs),sx_var_fas(1:0.01*fs));
 
-hold on
-
-stairs(t,sx);
+%% 3.7
+%soundsc(sx,fs);
+%soundsc(sx2,fs);
+%soundsc(sx_var_amp,fs);
+%soundsc(sx_var_fas,fs);
