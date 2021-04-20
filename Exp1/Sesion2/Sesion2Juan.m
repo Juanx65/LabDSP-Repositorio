@@ -165,7 +165,9 @@ dc02 = cuantiza(data2,N);
 function c = cuantiza_dither(x,N)
     delta = (max(x)-min(x))/(N-1);
     %J = imnoise(x,'gaussian',0 , ( 0.25*delta)^2 );
-    W = (delta*0.25).*rand(length(x),1);
+    W = (delta*0.25).*randn(length(x),1); %randn es ruido blanco con distribucion gaussiana, como la varianza de esto es varianza = 1
+    % lo multiplicamos por delta*0.25 para q quede como nos piden.
+    % rand =>  ruido blanco uniformemente distribuido
     J = x + W;
     deltaJ = (max(J)-min(J))/(N-1);
     S1 =  (J-min(J))/deltaJ;
