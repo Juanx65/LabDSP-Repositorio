@@ -8,21 +8,35 @@ subplot 312;
 plot(t,y);
 grid on;
 %% I.1)
-t = 0:2:59;
+t = 0:2:59; % tiempo de muestreo
 y = sin(t/6);
 t2 = 0:10:59;
 y2 = sin(t2/6);
+
 subplot 311
-stem(t,y);
+stem(t,y,'g','LineWidth',1.7);
+title('Stem con Ts = 2');
+legend('Stem', 'Location', 'SouthEast')
+ylabel('Amplitud');xlabel('Tiempo s');
 grid on;
+
 subplot 312;
-plot(t,y);
+plot(t,y,'m','LineWidth',1.5);
+title('Plot con Ts = 2');
+legend('Plot', 'Location', 'SouthEast')
+ylabel('Amplitud');xlabel('Tiempo s');
 grid on;
+
 subplot 313
-plot(t2,y2);
+plot(t2,y2,'b','LineWidth',1.4);
 hold on;
-stem(t2,y2);
+stem(t2,y2,'r','LineWidth',2);
+title('Plot y Stem con Ts = 10');
+legend('Plot','Stem','Location', 'SouthEast')
+ylabel('Amplitud');xlabel('Tiempo s');
 grid on;
+axis([0 60 -1 1]);
+
 % en la pregunta se refiere a graficar en comparasión al ejemplo dado o a 
 % la misma señal?????
 %% I 2)
@@ -41,8 +55,14 @@ grid on;
 %% I 6)
 %stairs() plotea continuamente un valor en el eje y hasta el siguiente
 %la siguiente muestra.
-
-stairs(t2,y2);
+stairs(t2,y2,'b','LineWidth',1.4);
+hold on;
+stem(t2,y2,'r','LineWidth',2);
+title('Stairs y Stem con Ts = 10');
+legend('Stairs','Stem','Location', 'SouthEast')
+ylabel('Amplitud');xlabel('Tiempo s');
+grid on;
+axis([0 60 -1 1]);
 
 %% II 
 
@@ -69,35 +89,35 @@ s4 = sin(2*pi*t4);
 %) graficos
 
 subplot 411
-plot(n1,s1);
-hold on;
-stem(n1,s1);
+stem(n1,s1,'r','LineWidth',1.8);
+title('S1[n] con Ts = 1/10');
+ylabel('Amplitud');xlabel('Muestras');
 grid on;
 axis([0 100 -1 1]);
 
 subplot 412
-plot(n2,s2);
-hold on;
-stem(n2,s2);
+stem(n2,s2,'g','LineWidth',1.8);
+title('S2[n] con Ts = 1/3');
+ylabel('Amplitud');xlabel('Muestras');
 grid on;
 axis([0 30 -1 1]);
 
 subplot 413
-plot(n3,s3);
-hold on;
-stem(n3,s3);
+stem(n3,s3,'b','LineWidth',1.8);
+title('S3[n] con Ts = 1/2');
+ylabel('Amplitud');xlabel('Muestras');
 grid on;
 axis([0 20 -1 1]);
 
 subplot 414
-plot(n4,s4);
-hold on;
-stem(n4,s4);
+stem(n4,s4,'m','LineWidth',1.8);
+title('S4[n] con Ts = 10/9');
+ylabel('Amplitud');xlabel('Muestras');
 grid on;
 axis([0 9 -1 1]);
 
 %5)  1 hz, 1hz, 0 hz, 0.1 hz 
-%6) y 8) 10, 3, 2, 0.9
+%6)  10, 3, 2 , 1
 %7) no, debido a la fs la señal resultante 
 %8)
 
@@ -105,12 +125,18 @@ axis([0 9 -1 1]);
 t = 0:1/5000:1-1/5000;
 s1 = sin(2*pi*50*t + 50);
 s2 = sin(2*pi*500*t + 50);
+
 subplot 211
-stem(t,s1);
+plot(t,s1,'m');
+title('S1 con fo = 50 Hz');
+ylabel('Amplitud');xlabel('Tiempo s');
 subplot 212
-stem(t,s2);
-% el largo de amvos vectores es 1x5000 double como se esperaba
-%se escofe fs = 5000 Hz para cumplir con el teorema de Nyquiz con ambas
+plot(t,s2,'r','LineWidth',0.01);
+title('S2 con fo = 500 Hz');
+ylabel('Amplitud');xlabel('Tiempo s');
+
+% el largo de ambos vectores es 1x5000 double como se esperaba
+%se escoge fs = 5000 Hz para cumplir con el teorema de Nyquiz con ambas
 %freciencias fo dadas y tener un margen ( 10 veces más grande que la
 %frecuencia más alta).
 

@@ -21,7 +21,7 @@ for c = n
 end
 
 %soundsc(aliasing_test,Fs);
-soundsc(S1,Fs/2);
+%soundsc(S1,Fs/2);
 %soundsc(S2,Fs/3);
 
 %1) a medida que se aumenta el downsamplig ( disminuir el numero de
