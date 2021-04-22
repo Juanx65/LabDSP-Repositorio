@@ -91,7 +91,7 @@ for k = 1:6
 end
 subplot 121
 plot(t(1:800),ss(1:800));
-subplot 122
+subplot 122|
 plot(t(1:800),ss2(1:800));
 
 %sounds(ss,100000);

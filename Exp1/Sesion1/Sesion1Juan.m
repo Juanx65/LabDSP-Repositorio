@@ -148,10 +148,14 @@ s1 = sin(2*pi*50*t + 50);
 s2 = sin(2*pi*500*t + 50);
 s3 = s1 + s2;
 
-%plot(t,s3);
+plot(t,s3,'r','LineWidth',1.8);
 %hold on
 %stem(t,s3);
-%grid on;
+grid on;
+title('Suma de señales sinusoidales de 50 y 500 Hz');
+xlabel('Tiempo s');ylabel('Amplitud');
+axis([0 50/1000 -2 2]);
+
 
 % periodo: 1/50 s
 %periodo para 200 y 300 -> 1/100 s

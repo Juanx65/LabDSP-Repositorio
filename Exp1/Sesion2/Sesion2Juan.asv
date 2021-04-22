@@ -65,14 +65,14 @@ plot(dc,'r'); % señal cuantizada ( musica )
 hold on;
 plot(data,'b'); % señal original ( musica ) 
 legend('Señal Cuantizada', 'Señal Original', 'SouthEast')
-title("Señal musica 16 16");
+title("Señal musica_16_16");
 ylabel("Amplitud");xlabel("Muestras");
 subplot 212
 plot(dc2,'r');  % sonidos de voz cuantizada 
 hold on;
 plot(data2,'b'); % sonidos de voz original
 legend('Señal Cuantizada', 'Señal Original', 'SouthEast')
-title("Señal sonidos voz 16 16");
+title("Señal sonidos voz16_16");
 ylabel("Amplitud");xlabel("Muestras");
 
 %% V 2 b)
@@ -87,13 +87,10 @@ N = bitsANiveles(2); % 12,8,4,2,1 bits
 
 subplot 211
 hist(e,20);
-ylabel('Frecuencia');xlabel('Error');
-title('Histograma del error de cuantización de musica 16 16');
 
 subplot 212
 hist(e2,20);
-ylabel('Frecuencia');xlabel('Error');
-title('Histograma del error de cuantización de sonidos voz 16 16');
+
 %% V 2 c)
 
 [data,fs] = audioread("musica_16_16.wav");
@@ -124,42 +121,28 @@ N2 = bitsANiveles(12); % 12,8,4,2,1 bits
 [r4e,l4e] = xcorr( e22 , 200, 'unbiased' ); % autcorrelacion
 
 figure(1)
-subplot 211
-plot(l1,r1,'LineWidth',1.5);
+plot(l1,r1);
 hold on;
-plot(l1e,r1e,'LineWidth',1.5);
-legend('Correlación', 'Autocorrelación', 'SouthEast')
-title("Señal musica 16 16 cuantizada con 2 bit");
-ylabel('');xlabel('');
-grid on
-%
-subplot 212
-plot(l2,r2,'LineWidth',1.5);
-hold on;
-plot(l2e,r2e,'LineWidth',1.5);
-legend('Correlación', 'Autocorrelación', 'SouthEast')
-title("Señal sonidos voz 16 16 cuantizada con 2 bit");
-ylabel('');xlabel('');
-grid on
+plot(l1e,r1e);
+title("musica 2 bit");
 %
 figure(2)
-subplot 211
-plot(l3,r3,'LineWidth',1.5);
+plot(l2,r2);
 hold on;
-plot(l3e,r3e,'LineWidth',1.5);
-legend('Correlación', 'Autocorrelación', 'SouthEast')
-title("Señal musica 16 16 cuantizada con 12 bit");
-ylabel('');xlabel('');
-grid on
+plot(l2e,r2e);
+title("voz 2 bit");
 %
-subplot 212
-plot(l4,r4,'LineWidth',1.5);
+figure(3)
+plot(l3,r3);
 hold on;
-plot(l4e,r4e,'LineWidth',1.5);
-legend('Correlación', 'Autocorrelación', 'SouthEast')
-title("Señal sonidos voz 16 16 cuantizada con 12 bit");
-ylabel('');xlabel('');
-grid on
+plot(l3e,r3e);
+title("musica 12 bit");
+%
+figure(4)
+plot(l4,r4);
+hold on;
+plot(l4e,r4e);
+title("voz 2 bit");
 
 %% V 3)
 
