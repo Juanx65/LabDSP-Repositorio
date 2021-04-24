@@ -193,16 +193,20 @@ y=int16(y*2^(-15));
 %whos('h');
 
 %% VI 2
-[dataVI,fs]=audioread("aliasing_test_16_16.wav");
-N=161;
-x=dataVI(1:N);
-w=blackman(N);
-y=w.*x;
+%[dataVI,fs]=audioread("aliasing_test_16_16.wav");
+%N=161;
+%x=dataVI(1:N);
+%w=blackman(N);
+%y=w.*x;
 
-plot(y,'.','LineWidth',1.5)
+plot(y,'.')
 hold on
-plot(x,'x','LineWidth',1.5)
-plot(w,'o','LineWidth',1.5)
+plot(x,'x')
+plot(w,'o')
+legend('señal enventanada y','señal original x','ventana w');
+xlabel('Numero de Muestra');
+ylabel('Amplitud de la señal en representación complemento 2');
+title('Señales del Sistema')
 %whos('w');
 %h=blackman(N);
 %whos('h');
