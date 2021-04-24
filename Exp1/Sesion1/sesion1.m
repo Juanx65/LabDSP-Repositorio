@@ -8,55 +8,105 @@ subplot 312
 plot(t,y)
 grid on
 
-%% parte I
-t = 0:10:59;
+%% I.1)
+t = 0:2:59; % tiempo de muestreo
 y = sin(t/6);
-subplot 411
-stem(t,y);
-title('Grafico usando comando plot');
-grid on
-subplot 412
-plot(t,y)
-title('Grafico usando comando stem');
-grid on
-subplot 413
-plot(t,y,'LineWidth',2)
-title('Graficos superpuestos');
-hold on
-stem(t,y,'LineWidth',1)
-grid on
-subplot 414
-stairs(t,y);
-title('Grafico usando comando stairs');
+t2 = 0:10:59;
+y2 = sin(t2/6);
 
-%% Parte II
-t1 = 0:0.1:0.1*100;
+subplot 311
+stem(t,y,'g','LineWidth',1.7);
+title('Stem con Ts = 2');
+legend('Stem', 'Location', 'SouthEast')
+ylabel('Amplitud');xlabel('Tiempo s');
+grid on;
+
+subplot 312;
+plot(t,y,'m','LineWidth',1.5);
+title('Plot con Ts = 2');
+legend('Plot', 'Location', 'SouthEast')
+ylabel('Amplitud');xlabel('Tiempo s');
+grid on;
+
+subplot 313
+plot(t2,y2,'b','LineWidth',1.4);
+hold on;
+stem(t2,y2,'r','LineWidth',2);
+title('Plot y Stem con Ts = 10');
+legend('Plot','Stem','Location', 'SouthEast')
+ylabel('Amplitud');xlabel('Tiempo s');
+grid on;
+axis([0 60 -1 1]);
+%% I 6)
+%stairs() plotea continuamente un valor en el eje y hasta el siguiente
+%la siguiente muestra.
+stairs(t2,y2,'b','LineWidth',1.4);
+hold on;
+stem(t2,y2,'r','LineWidth',2);
+title('Stairs y Stem con Ts = 10');
+legend('Stairs','Stem','Location', 'SouthEast')
+ylabel('Amplitud');xlabel('Tiempo s');
+grid on;
+axis([0 60 -1 1]);
+
+
+%% II 
+
+%1) Ts = 1/10
+t1 = 0:1/10:100*1/10;
 n1 = 0:1:100;
-y1 = sin(2*pi*t1);
-subplot 221
-stem(n1,y1);
+s1 = sin(2*pi*t1);
+
+%2) Ts = 1/3
+t2 = 0:1/3:30*1/3;
+n2 = 0:1:30;
+s2 = sin(2*pi*t2);
+
+%3) Ts = 1/2
+t3 = 0:1/2:20*1/2;
+n3 = 0:1:20;
+s3 = sin(2*pi*t3);
+
+%4) Ts= 10/9
+t4 = 0:10/9:9*10/9;
+n4 = 0:1:9;
+s4 = sin(2*pi*t4);
+
+%) graficos
+
+subplot 411
+stem(n1,s1,'r','LineWidth',1.8);
+title('S1[n] con Ts = 1/10');
+ylabel('Amplitud');xlabel('Muestras');
+grid on;
 axis([0 100 -1 1]);
 
-t2 = 0:1/3:1/3*30;
-n2 = 0:1:30;
-y2 = sin(2*pi*t2);
-subplot 222
-stem(n2,y2);
+subplot 412
+stem(n2,s2,'g','LineWidth',1.8);
+title('S2[n] con Ts = 1/3');
+ylabel('Amplitud');xlabel('Muestras');
+grid on;
 axis([0 30 -1 1]);
 
-t3 = 0:1/2:1/2*20;
-n3 = 0:1:20;
-y3 = sin(2*pi*t3);
-subplot 223
-stem(n3,y3);
+subplot 413
+stem(n3,s3,'b','LineWidth',1.8);
+title('S3[n] con Ts = 1/2');
+ylabel('Amplitud');xlabel('Muestras');
+grid on;
 axis([0 20 -1 1]);
 
-t4 = 0:10/9:10/9*9;
-n4 = 0:1:9;
-y4 = sin(2*pi*t4);
-subplot 224
-stem(n4,y4);
+subplot 414
+stem(n4,s4,'m','LineWidth',1.8);
+title('S4[n] con Ts = 10/9');
+ylabel('Amplitud');xlabel('Muestras');
+grid on;
 axis([0 9 -1 1]);
+
+%5)  1 hz, 1hz, 0 hz, 0.1 hz 
+%6)  10, 3, 2 , 1
+%7) no, debido a la fs la señal resultante 
+%8)
+
 
 %% Parte III
 
