@@ -21,7 +21,7 @@ for c = n
 end
 
 %soundsc(aliasing_test,Fs);
-%soundsc(S1,Fs/2);
+soundsc(S1,Fs/2);
 %soundsc(S2,Fs/3);
 
 %1) a medida que se aumenta el downsamplig ( disminuir el numero de
@@ -43,12 +43,12 @@ title('Espectograma de la señal');
 [data,fs] = audioread("musica_16_16.wav");
 [data2,fs2] = audioread("sonidos_voz_16_16.wav");
 
-N = bitsANiveles(12); % 12,8,4,2,1 bits
+N = bitsANiveles(4); % 12,8,4,2,1 bits
 
 c = cuantiza(data,N);
 c2 = cuantiza(data2,N);
-%soundsc(data,fs);
-soundsc(c,fs);                                
+soundsc(data,fs);
+%soundsc(c,fs);                                
 %soundsc(data2,fs2);
 
 %% V 2 a)
@@ -166,7 +166,7 @@ grid on
 [data,fs] = audioread("musica_16_16.wav");
 [data2,fs2] = audioread("sonidos_voz_16_16.wav");
 
-N = bitsANiveles(2); % 12,8,4,2,1 bits
+N = bitsANiveles(4); % 12,8,4,2,1 bits
 
 dc1 = cuantiza_dither(data, N); % 2bits | musica
 dc2 = cuantiza_dither(data2,N); %2bits | voz
@@ -199,10 +199,10 @@ x=dataVI(1:N);
 w=blackman(N);
 y=w.*x;
 
-plot(y,'.')
+plot(y,'.','LineWidth',1.5)
 hold on
-plot(x,'x')
-plot(w,'o')
+plot(x,'x','LineWidth',1.5)
+plot(w,'o','LineWidth',1.5)
 %whos('w');
 %h=blackman(N);
 %whos('h');
