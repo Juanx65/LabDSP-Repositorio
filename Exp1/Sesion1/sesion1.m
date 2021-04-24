@@ -81,6 +81,29 @@ suma_2 = s3+s4;
 subplot 212
 plot(t(1:250),suma_2(1:250))
 
+%% Parte III
+
+t = 0:1/5000:1-1/5000;
+s1 = sin(2*pi*50*t + 50);
+s2 = sin(2*pi*500*t + 50);
+subplot 211
+plot(t,s1);
+subplot 212
+plot(t,s2);
+% soundsc(s1,5000);
+% soundsc(s2,5000);
+
+%% 3.2
+
+s_suma = s1+s2;
+subplot 211
+plot(t(1:250),s_suma(1:250));
+s3 = sin(2*pi*200*t + 50);
+s4 = sin(2*pi*300*t + 50);
+suma_2 = s3+s4;
+subplot 212
+plot(t(1:250),suma_2(1:250))
+
 %% 3.3
 t = 0:1/100000:1;
 ss = zeros(1,100001);
@@ -88,59 +111,89 @@ ss2 = zeros(1,100001);
 for k = 1:6
     ss = ss+sin(2*pi*(2*k-1)*220*t)/(2*k-1);
     ss2 = ss2+sin(2*pi*(2*k-1)*220*t+2*pi*rand(1,1))/(2*k-1);
+    ss3 = ss3+sin(2*pi*(2*k-1)*220*t+2*pi*rand(1,1))/(2*k-1);
+    ss4 = ss4+sin(2*pi*(2*k-1)*220*t+2*pi*rand(1,1))/(2*k-1);
 end
-subplot 121
-plot(t(1:800),ss(1:800));
-subplot 122|
-plot(t(1:800),ss2(1:800));
+plot(t(1:1200),ss(1:1200));
+xlabel('Tiempo s');
+ylabel("Amplitud");
+title('Aproximación de Señal Cuadrada');
+subplot 311
+plot(t(1:1200),ss2(1:1200));
+xlabel('Tiempo s');
+ylabel("Amplitud");
+title('Aproximación de Señal Cuadrada con fase aleatoria');
+subplot 312
+plot(t(1:1200),ss3(1:1200));
+xlabel('Tiempo s');
+ylabel("Amplitud");
+title('Aproximación de Señal Cuadrada con fase aleatoria');
+subplot 313
+plot(t(1:1200),ss4(1:1200));
+xlabel('Tiempo s');
+ylabel("Amplitud");
+title('Aproximación de Señal Cuadrada con fase aleatoria');
 
-%sounds(ss,100000);
-%sounds(ss2,100000);
 
 %% 3.4
+t = 0:1/5000:1-1/5000;
+s2 = sin(2*pi*500*t + 50);
 random = 2*rand(1,5000)-1;
 s2_rand = s2+random;
 subplot 221
-plot(t(1:0.01*5000),s2_rand(1:0.01*5000));
+plot(t(1:0.01*5000)*1000,s2_rand(1:0.01*5000));
+xlabel('Tiempo ms')
+ylabel('Amplitud')
+title('Sinusoidal sumada con señal aleatoria para fs=5000 Hz')
 subplot 222
-plot(t(1:0.01*5000),s2(1:0.01*5000));
+plot(t(1:0.01*5000)*1000,s2(1:0.01*5000));
+xlabel('Tiempo ms')
+ylabel('Amplitud')
+title('Señal sinusoidal original')
 
 t2=0:1/100000:1;
 s2_2 = sin(2*pi*500*t2 + 50);
 random_2 = 2*rand(1,100000+1)-1;
 s2_rand_2 = s2_2+random_2;
 subplot 223
-plot(t2(1:0.01*100000),s2_rand_2(1:0.01*100000));
+plot(t2(1:0.01*100000)*1000,s2_rand_2(1:0.01*100000));
+xlabel('Tiempo ms')
+ylabel('Amplitud')
+title('Sinusoidal sumada con señal aleatoria para fs=100000 Hz')
 subplot 224
-plot(t2(1:0.01*100000),s2_2(1:0.01*100000));
-
-%% 3.5
-fs=100000;
-t=0:1/fs:0.5-0.5/fs;
-rdm=2*rand(1,0.5*fs)-1;
-sx=sin(2*pi*500*t);
-sx2=sx+rdm;
-subplot 211
-plot(t(1:0.01*fs),sx(1:0.01*fs));
-subplot 212
-plot(t(1:0.01*fs),sx2(1:0.01*fs));
+plot(t2(1:0.01*100000)*1000,s2_2(1:0.01*100000));
+xlabel('Tiempo ms')
+ylabel('Amplitud')
+title('Señal sinusoidal original')
 
 %% 3.5 
 sx_var_amp = sx.*(rand(1,0.5*fs)*0.5+0.5);
 subplot 211
-plot(t(1:0.01*fs),sx(1:0.01*fs));
+plot(t2(1:0.01*fs)*1000,sx(1:0.01*fs));
+xlabel('Tiempo ms')
+ylabel('Amplitud')
+title('Señal original')
 subplot 212
-plot(t(1:0.01*fs),sx_var_amp(1:0.01*fs));
+plot(t2(1:0.01*fs)*1000,sx_var_amp(1:0.01*fs));
+xlabel('Tiempo ms')
+ylabel('Amplitud')
+title('Señal con amplitud aleatoria')
 
 %% 3.6
-sx_var_fas = sin(2*pi*500*t + pi*(rand(1,0.5*fs)-0.5));
+sx_var_fas = sin(2*pi*500*t2 + pi*(rand(1,fs+1)-0.5));
 subplot 211
-plot(t(1:0.01*fs),sx(1:0.01*fs));
+plot(t2(1:0.01*fs)*1000,sx(1:0.01*fs));
+xlabel('Tiempo ms')
+ylabel('Amplitud')
+title('Señal original')
 subplot 212
-plot(t(1:0.01*fs),sx_var_fas(1:0.01*fs));
+plot(t2(1:0.01*fs)*1000,sx_var_fas(1:0.01*fs));
+xlabel('Tiempo ms')
+ylabel('Amplitud')
+title('Señal con fase sumada a señal aleatoria')
 
 %% 3.7
 %soundsc(sx,fs);
 %soundsc(sx2,fs);
 %soundsc(sx_var_amp,fs);
-%soundsc(sx_var_fas,fs);
+%soundsc(sx_var_fas,fs)
