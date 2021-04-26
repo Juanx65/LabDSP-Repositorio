@@ -20,6 +20,15 @@ stem(sh_data,'k');
 
 segmento = funI2(data,fs);
 
+%% I 3)
+
+[data,fs] = audioread("gtr-jazz_16_48.wav");
+
+figure(1)
+stem(data,'b');
+
+segmento2 = funI2(data,fs);
+
 
 
 
