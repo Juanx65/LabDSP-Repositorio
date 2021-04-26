@@ -1,0 +1,12 @@
+%% I 1)
+
+[data,fs] = audioread("besh.wav");
+
+e = data(fs*65/1000 : fs*180/1000);
+sh = data(fs*220/1000 : fs*300/1000);
+
+figure(1)
+stem(data,'b');
+hold on 
+stem(e,'r');
+stem(sh,
