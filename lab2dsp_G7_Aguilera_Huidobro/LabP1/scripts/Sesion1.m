@@ -29,10 +29,36 @@ stem(data,'b');
 
 segmento2 = funI2(data,fs);
 
+%% II 1)
 
+[data,fs] = audioread("gtr-jazz_16_48.wav");
+y = distorsionSimple(data);
 
 
 %% Funciones
+%II 1)
+function y = distorsionSimple(xNoNorm)
+    Gi = 1;
+    Go = 1;
+    a = 0.2;
+    b = 0.05;
+    
+    x = normalize(xNoNorm);
+    x1 = x.*Gi;
+    
+    absx = abs(x1);
+    y1 = zeros(length(x1),2);
+    
+    for i = 1:numel(absx)
+        if absx(i) >= a
+            y1(i) = x1(i)*b + sign(x1(i))*(1-b)*a;
+        else
+            y1(i) = x1(i);
+        end
+    end
+    
+    y = y1.*Go;
+end
 
 %I 2)
 function segmento  = funI2(data,fs)
