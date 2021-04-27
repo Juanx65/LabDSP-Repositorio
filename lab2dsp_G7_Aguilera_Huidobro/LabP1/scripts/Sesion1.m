@@ -49,21 +49,21 @@ plot(y);
 %% II 1)c
 y2 = distorsionSimple(data,0.1,0.05,3,1);
 subplot 211
-plot(normalize(data),y)
+plot(data,y,".")
 xlabel('Señal original')
 ylabel('Señal overdrive')
 xlim([-0.5 0.5])
 subplot 212
-plot(normalize(data),y2)
+plot(data,y2,".")
 xlim([-0.5 0.5])
 
 %% II 2
 
 %% Funciones
 %II 1)
-function y = distorsionSimple(xNoNorm,a,b,Gi,Go)
+function y = distorsionSimple(x,a,b,Gi,Go)
     
-    x = normalize(xNoNorm);
+    
     x1 = x.*Gi;
     
     absx = abs(x1);
