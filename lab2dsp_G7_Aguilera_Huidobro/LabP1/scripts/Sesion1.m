@@ -18,7 +18,7 @@ stem(e_data,'r');
 stem(sh_data,'k');
 % I 2)
 
-segmento = funI2(data,fs);
+segmento = funI2(data,fs,'Lab2p1_segmento_vocal.wav');
 
 %% I 3)
 
@@ -27,21 +27,41 @@ segmento = funI2(data,fs);
 figure(1)
 stem(data,'b');
 
-segmento2 = funI2(data,fs);
+segmento2 = funI2(data,fs,'Lab2p1_arpegio.wav');
 
 %% II 1)
 
 [data,fs] = audioread("gtr-jazz_16_48.wav");
-y = distorsionSimple(data);
+y = distorsionSimple(data,0.2,0.05,1,1);
+subplot 211
+plot(data);
+subplot 212
+plot(y);
 
+%% II 1)b
+[data,fs] = audioread("sonidos_voz_16_8.wav");
+y = distorsionSimple(data,0.2,0.05,1,1);
+subplot 211
+plot(data);
+subplot 212
+plot(y);
+
+%% II 1)c
+y2 = distorsionSimple(data,0.1,0.05,3,1);
+subplot 211
+plot(normalize(data),y)
+xlabel('Señal original')
+ylabel('Señal overdrive')
+xlim([-0.5 0.5])
+subplot 212
+plot(normalize(data),y2)
+xlim([-0.5 0.5])
+
+%% II 2
 
 %% Funciones
 %II 1)
-function y = distorsionSimple(xNoNorm)
-    Gi = 1;
-    Go = 1;
-    a = 0.2;
-    b = 0.05;
+function y = distorsionSimple(xNoNorm,a,b,Gi,Go)
     
     x = normalize(xNoNorm);
     x1 = x.*Gi;
@@ -61,11 +81,11 @@ function y = distorsionSimple(xNoNorm)
 end
 
 %I 2)
-function segmento  = funI2(data,fs)
+function segmento  = funI2(data,fs,nombre)
     [x, y] = ginput(2);
     
     segmento = data(x(1) : x(2) );
     
-    audiowrite('Lab2p1_segmento_vocal.wav',segmento,fs);
+    audiowrite(nombre,segmento,fs);
     
 end
