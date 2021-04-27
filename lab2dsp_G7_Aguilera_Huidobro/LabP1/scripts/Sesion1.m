@@ -58,8 +58,38 @@ plot(normalize(data),y2)
 xlim([-0.5 0.5])
 
 %% II 2
+[data,fs] = audioread("sonidos_voz_16_8.wav");
+N = 4;
+t = 125;
+b = 0.35;
+y = delayMultiTap(data,fs,N,t,b);
 
-%% Funciones
+subplot 211
+plot(y)
+grid on;
+subplot 212
+plot(data)
+grid on;
+
+%% Funcionet
+%II 3)
+function y = delayMultiTap(x,fs,N,T,b)
+
+    M = round( (T/1000)*fs );
+    y = zeros(length(x),2);
+    
+    for i = 1:numel(x)
+        y(i) = x(i);
+        for j = 1:N
+            if i > j*M
+                y(i) =  y(i) + b* x(i - j*M); % x no puede ser indexado negativamente, partimos de x(N)
+            end
+            
+        end
+    end
+                       
+end
+
 %II 1)
 function y = distorsionSimple(xNoNorm,a,b,Gi,Go)
     
