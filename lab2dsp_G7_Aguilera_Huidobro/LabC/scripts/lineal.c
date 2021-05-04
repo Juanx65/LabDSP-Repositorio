@@ -12,6 +12,7 @@
 #include <template.h>
 #include <stdint.h>
 #include <stdbool.h>
+#include <stdio.h>
 
 /******************************************************************************
 **      MODULE PREPROCESSOR CONSTANTS
@@ -41,7 +42,7 @@
 /******************************************************************************
 **      FUNCTION DEFINITIONS
 ******************************************************************************/
-
+#define BUFFER_SIZE 100
 /***************************************************************************//**
 *   \brief 
 *
@@ -51,9 +52,12 @@
 *******************************************************************************/
 double funcion(double input)
 {
-	double output = 0.0;
-	
-	output = 2.5 * input;
+    static double buffer[BUFFER_SIZE];
+    // buffer lineal
+    for (int i=BUFFER_SIZE-1; i>0 ; i--)
+        buffer[i] = buffer[i-1];
+    buffer[0] = input;
+	double output = buffer[BUFFER_SIZE-1];
 	return output;
 }
 

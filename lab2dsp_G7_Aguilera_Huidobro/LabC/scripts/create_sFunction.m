@@ -10,7 +10,7 @@ def.OutputFcnSpec = 'double y1 = funcion(double u1)';
 % Archivo de cabecera
 def.HeaderFiles = {'template.h'};
 % Archivo fuente en C
-def.SourceFiles = {'template.c'};
+def.SourceFiles = {'lineal.c'};
 % CompilaciÃ³n para la s-function
 legacy_code('sfcn_cmex_generate', def)
 legacy_code('compile', def)
