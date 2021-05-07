@@ -43,7 +43,7 @@
 /******************************************************************************
 **      FUNCTION DEFINITIONS
 ******************************************************************************/
-#define BUFFER_SIZE 20000
+#define t_muestreo 16000
 /***************************************************************************//**
 *   \brief 
 *
@@ -53,13 +53,21 @@
 *******************************************************************************/
 double funcion(double input)
 {
-    static double buffer[BUFFER_SIZE];
-    // buffer lineal
-    for (int i=BUFFER_SIZE-1; i>0 ; i--)
-        buffer[i] = buffer[i-1];
-    buffer[0] = input;
-	double output = buffer[BUFFER_SIZE-1];
-	return output;
+    static int counter=0;
+    static double rms=0;
+    static double output=0;
+    if (counter<0.02*t_muestreo)
+    {
+        rms+=input*input;
+        counter++;
+    }
+    else
+    {
+        rms=sqrt(rms/counter);
+        counter=0;
+        output=rms;
+    }
+    return output;
 }
 
 

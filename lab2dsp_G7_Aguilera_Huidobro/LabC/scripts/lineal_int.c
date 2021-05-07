@@ -51,14 +51,14 @@
 *
 *   \return Void.
 *******************************************************************************/
-double funcion(double input)
+int16_t funcion(int16_t input)
 {
-    static double buffer[BUFFER_SIZE];
+    static int16_t buffer[BUFFER_SIZE];
     // buffer lineal
     for (int i=BUFFER_SIZE-1; i>0 ; i--)
         buffer[i] = buffer[i-1];
     buffer[0] = input;
-	double output = buffer[BUFFER_SIZE-1];
+	int16_t output = buffer[BUFFER_SIZE-1];
 	return output;
 }
 

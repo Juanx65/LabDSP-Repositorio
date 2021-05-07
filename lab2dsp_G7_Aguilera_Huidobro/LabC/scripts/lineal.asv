@@ -13,7 +13,6 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include <stdio.h>
-#include <tmwtypes.h>
 
 /******************************************************************************
 **      MODULE PREPROCESSOR CONSTANTS
@@ -51,7 +50,7 @@
 *
 *   \return Void.
 *******************************************************************************/
-double funcion(double input)
+int16 funcion(double input)
 {
     static double buffer[BUFFER_SIZE];
     // buffer lineal
