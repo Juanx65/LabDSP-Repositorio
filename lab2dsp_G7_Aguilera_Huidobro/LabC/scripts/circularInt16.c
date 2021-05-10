@@ -13,7 +13,6 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include <stdio.h>
-#include <tmwtypes.h>
 
 /******************************************************************************
 **      MODULE PREPROCESSOR CONSTANTS
@@ -54,11 +53,11 @@
 int16_t funcion(int16_t input)
 {
     static int16_t buffer[BUFFER_SIZE];
-    // buffer lineal
-    for (int i=BUFFER_SIZE-1; i>0 ; i--)
-        buffer[i] = buffer[i-1];
-    buffer[0] = input;
-	int16_t output = buffer[BUFFER_SIZE-1];
+    // buffer circular
+    static int i = 0;
+    int16_t output = buffer[i];
+    buffer[i] = input;
+    i = ((i+1)%BUFFER_SIZE);
 	return output;
 }
 
