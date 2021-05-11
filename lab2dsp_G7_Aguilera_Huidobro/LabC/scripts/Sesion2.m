@@ -1,8 +1,7 @@
 %% V Parte I
-%%[data,fs] = audioread('sonidos_voz_16_8.wav');
-
+%[data,fs] = audioread('sonidos_voz_16_8.wav');
 x=rand(10,1);
-%%y = interpola(data,7);
+%y = interpola(data,7);
 y = interpola(x,7);
 gd = 21;
 tx = 1:7:length(y);
