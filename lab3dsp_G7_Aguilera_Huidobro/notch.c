@@ -49,15 +49,28 @@ static double filterBiquad(bqState_t *filterNState, double filterInput);
 
 extern double notch(double data)
 {
-    bqState_t filtro_notch = {
-        1.9308,
-        0.96,
-        1,
-        -1.9702,
-        1,
+    int frec = 440;
+    int BW = 100;
+    int fs = 16000;
+    
+    double theta = 2*3.1415169265358979323846*frec/fs;
+    double bw = 2*3.1415169265358979323846*BW/fs;
+    double d = (1-sin(bw))/cos(bw);
+    double gain = (1+d)/2;
+    static bqState_t filtro_notch = {
+        0,
+        0,
+        0,
+        0,
+        0,
         {0,0,0},
-        {0,0,0},
-        0.98};
+        {0,0,0}
+    };
+    filtro_notch.bqA1=-(1+d)*cos(theta);
+    filtro_notch.bqA2=d;
+    filtro_notch.bqB0=gain;
+    filtro_notch.bqB1=-2*cos(theta)*gain;
+    filtro_notch.bqB2=gain;
 
       return filterBiquad(&filtro_notch, data);
 }
