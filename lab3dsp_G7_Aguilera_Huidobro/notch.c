@@ -40,7 +40,8 @@
 
 /******************************************************************************
 **      PRIVATE FUNCTION DECLARATIONS (PROTOTYPES)
-******************************************************************************
+******************************************************************************/
+static double filterBiquad(bqState_t *filterNState, double filterInput);
 
 /******************************************************************************
 **      FUNCTION DEFINITIONS
@@ -77,9 +78,9 @@ static double filterBiquad(bqState_t *filterNState, double filterInput)
     filterNState->bqInput[0]=filterInput;
     filterNState->bqOutput[2]=filterNState->bqOutput[1];
     filterNState->bqOutput[1]=filterNState->bqOutput[0];
-    filterNState->bqOutput[0]=((filterNstate->bqB0*filterNState->bqInput[0]+filterNstate->bqB1*filterNstate->bqInput[1]
-            +filterNstate->bqB2*filterNstate->bqInput[2])-(filterNstate->bqA1*filterNstate->bqOutput[1]
-            +filterNstate->bqA2*filterNstate->bqOutput[2]);
+    filterNState->bqOutput[0]=((filterNState->bqB0*filterNState->bqInput[0]+filterNState->bqB1*filterNState->bqInput[1]
+            +filterNState->bqB2*filterNState->bqInput[2])-(filterNState->bqA1*filterNState->bqOutput[1]
+            +filterNState->bqA2*filterNState->bqOutput[2]));
     return filterNState->bqOutput[0];
     /* Se retorna la salida */
 }

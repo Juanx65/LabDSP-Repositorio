@@ -48,9 +48,8 @@ extern "C" {
 #endif
 /*************************************************************************************************/
 // DeclaraciÃ³n de Funciones 
-double filterBiquad(bqState_t *filterNState, float input); //int16_t funcion(int16_t input);
-
 /*************************************************************************************************/
+extern double notch(double data);
 #ifdef __cplusplus
 }
 #endif
