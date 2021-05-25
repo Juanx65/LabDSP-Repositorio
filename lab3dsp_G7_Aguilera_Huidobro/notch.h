@@ -25,17 +25,16 @@
 /******************************************************************************
 **      PUBLIC DATATYPES
 ******************************************************************************/
-typedef struct bqState_t{
-double bqA1;
-double bqA2;
-double bqB0;
-double bqB1;
-double bqB2;
-double bqInput[3];
-double bqOutput[3];
-double Gain;
+typedef struct bqState_t {
+    double bqA1;
+    double bqA2;
+    double bqB0;
+    double bqB1;
+    double bqB2;
+    double bqInput[3];
+    double bqOutput[3];
+    double Gain;
 } bqState_t;
-
 /******************************************************************************
 **      PUBLIC (GLOBAL) VARIABLES DECLARATIONS
 ******************************************************************************/

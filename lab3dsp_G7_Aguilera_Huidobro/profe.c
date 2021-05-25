@@ -14,6 +14,7 @@
 #include "dsp_lab_utils.h"
 #include <math.h>
 #include "dlu_codec_config.h"
+#include "template.h"
 
 /******************************************************************************
 **      MODULE PREPROCESSOR CONSTANTS
@@ -91,6 +92,21 @@ bqStatus_t tuneBsfState = { // Inicialmente para 500Hz y 100Hz de bw
 {0.0, 0.0, 0.0},
 {0.0, 0.0, 0.0}
 };
+
+float filter_notch(float input)
+{
+    bqState_t filtro_notch = {
+      1.9308,
+      0.96,
+      1,
+      -1.9702,
+      1,
+      {0,0,0},
+      {0,0,0},
+      0.98};
+
+      return filterBiquad(filtro_notch, input);
+}
 
 float tuneBsfOutput = 0.0;
 float notchFreq     = 20.0;
@@ -184,8 +200,16 @@ void main()
 ******************************************************************************/
 float filterBiquad(bqStatus_t *filterNState, float filterInput){
     // COMPLETAR
+    filterNState.bqInput[2]=filterNState.bqInput[1];
+    filterNState.bqInput[1]=filterNState.bqInput[0];
+    filterNState.bqInput[0]=filterInput;
+    filterNState.bqOutput[2]=filterNState.bqOutput[1];
+    filterNState.bqOutput[1]=filterNState.bqOutput[0];
+    filterNState.bqOutput[0]=((filterNstate.bqB0*filterNState.bqInput[0]+filterNstate.bqB1*filterNstate.bqInput[1]
+            +filterNstate.bqB2*filterNstate.bqInput[2])-(filterNstate.bqA1*filterNstate.bqOutput[1]
+            +filterNstate.bqA2*filterNstate.bqOutput[2]);
+    return filterNState.bqOutput[0];
     /* Se retorna la salida */
-    return 0.0;
 }
 
 /******************************************************************************
