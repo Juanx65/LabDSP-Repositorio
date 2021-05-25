@@ -1,7 +1,7 @@
 /***************************************************************************//**
 * \file     Funciones que deben impementar los alumnos
 *
-* \brief    
+* \brief
 *
 * \authors  Gonzalo Carrasco
 *******************************************************************************/
@@ -40,12 +40,7 @@
 
 /******************************************************************************
 **      PRIVATE FUNCTION DECLARATIONS (PROTOTYPES)
-******************************************************************************/
-
-static double filterBiquad(bqState_t *filterNState, double filterInput);
-extern double notch(double);
-
-
+******************************************************************************
 
 /******************************************************************************
 **      FUNCTION DEFINITIONS
@@ -63,7 +58,7 @@ extern double notch(double data)
         {0,0,0},
         0.98};
 
-      return filterBiquad(filtro_notch, data);
+      return filterBiquad(&filtro_notch, data);
 }
 
 /******************************************************************************
@@ -77,14 +72,14 @@ extern double notch(double data)
 static double filterBiquad(bqState_t *filterNState, double filterInput)
 {
     // COMPLETAR
-    filterNState.bqInput[2]=filterNState.bqInput[1];
-    filterNState.bqInput[1]=filterNState.bqInput[0];
-    filterNState.bqInput[0]=filterInput;
-    filterNState.bqOutput[2]=filterNState.bqOutput[1];
-    filterNState.bqOutput[1]=filterNState.bqOutput[0];
-    filterNState.bqOutput[0]=((filterNstate.bqB0*filterNState.bqInput[0]+filterNstate.bqB1*filterNstate.bqInput[1]
-            +filterNstate.bqB2*filterNstate.bqInput[2])-(filterNstate.bqA1*filterNstate.bqOutput[1]
-            +filterNstate.bqA2*filterNstate.bqOutput[2]);
-    return filterNState.bqOutput[0];
+    filterNState->bqInput[2]=filterNState->bqInput[1];
+    filterNState->bqInput[1]=filterNState->bqInput[0];
+    filterNState->bqInput[0]=filterInput;
+    filterNState->bqOutput[2]=filterNState->bqOutput[1];
+    filterNState->bqOutput[1]=filterNState->bqOutput[0];
+    filterNState->bqOutput[0]=((filterNstate->bqB0*filterNState->bqInput[0]+filterNstate->bqB1*filterNstate->bqInput[1]
+            +filterNstate->bqB2*filterNstate->bqInput[2])-(filterNstate->bqA1*filterNstate->bqOutput[1]
+            +filterNstate->bqA2*filterNstate->bqOutput[2]);
+    return filterNState->bqOutput[0];
     /* Se retorna la salida */
 }
