@@ -25,7 +25,16 @@
 /******************************************************************************
 **      PUBLIC DATATYPES
 ******************************************************************************/
-
+typedef struct bqState_t{
+double bqA1;
+double bqA2;
+double bqB0;
+double bqB1;
+double bqB2;
+double bqInput[3];
+double bqOutput[3];
+double Gain;
+} bqState_t;
 
 /******************************************************************************
 **      PUBLIC (GLOBAL) VARIABLES DECLARATIONS
@@ -40,7 +49,7 @@ extern "C" {
 #endif
 /*************************************************************************************************/
 // DeclaraciÃ³n de Funciones 
-double funcion(double input); //int16_t funcion(int16_t input);
+double filterBiquad(bqState_t *filterNState, float input); //int16_t funcion(int16_t input);
 
 /*************************************************************************************************/
 #ifdef __cplusplus
