@@ -64,6 +64,7 @@ float filter_notch(float input)
     {0,0,0},
     {0,0,0},
     0.98};
+    return filterBiquad(filtro_notch,input)
 }
 
 float filterBiquad(bqState_t *filterNState, float filterInput)

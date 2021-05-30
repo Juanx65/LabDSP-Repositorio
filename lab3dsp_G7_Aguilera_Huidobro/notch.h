@@ -33,7 +33,6 @@ typedef struct bqState_t {
     double bqB2;
     double bqInput[3];
     double bqOutput[3];
-    double Gain;
 } bqState_t;
 /******************************************************************************
 **      PUBLIC (GLOBAL) VARIABLES DECLARATIONS
