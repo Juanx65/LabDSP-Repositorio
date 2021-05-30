@@ -53,13 +53,14 @@ load('nspeech.mat');
 frec = 1685;
 fn = 1685/4000 * pi;
 senal_filtrada = filtro1(nspeech,fn);
+f_vector= -4000:2*4000/length(nspeech):4000-4000/length(nspeech);
 subplot 211
-plot(20*log10(abs(fft(nspeech))))
+plot(f_vector,20*log10(abs(fftshift(fft(nspeech)))))
 xlabel('Frecuencia Hz')
 ylabel('Amplitud dB')
 title('nspeech')
 subplot 212
-plot(20*log10(abs(fft(senal_filtrada))))
+plot(f_vector,20*log10(abs(fftshift(fft(senal_filtrada)))))
 xlabel('Frecuencia Hz')
 ylabel('Amplitud dB')
 title('nspeech pasado por filtor FIR')
