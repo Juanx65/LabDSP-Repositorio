@@ -1,12 +1,12 @@
 %% 1
 x=[1, zeros([1,1000])];
-theta= 0;
+theta= pi/6;
 y=filtro1(x,theta);
 
 stem(y(1:10))
 xlabel('Muestra')
 ylabel('Amplitud')
-title('Respuesta a Impulso con \theta = 0')
+title('Respuesta a Impulso con \theta = pi/6')
 
 %% 1 resp frec
 y1=filtro1(x,pi/6);
@@ -19,7 +19,7 @@ plot(f_vector,20*log10(abs(fftshift(fft(y2)))));
 hold on
 plot(f_vector,20*log10(abs(fftshift(fft(y3)))));
 legend(' \theta = pi/6',' \theta = pi/3',' \theta = pi/2')
-xlabel('Frecuencia') %??????? q unidad? 
+xlabel('Frecuencia rad/muestra') %??????? q unidad? 
 ylabel('Amplitud dB')
 title('Magnitud de respuesta en frecuencia')
 
@@ -28,6 +28,9 @@ x=[1, zeros([1,1000])];
 theta= pi/6;
 y=filtro2(x,0.3,theta);
 stem(y(1:10))
+xlabel('Muestra')
+ylabel('Amplitud')
+title('Respuesta a Impulso con \theta = pi/6')
 
 %% 2 resp frec
 y1=filtro2(x,pi/3,0.99);
@@ -39,7 +42,10 @@ hold on
 plot(f_vector,20*log10(abs(fftshift(fft(y2)))));
 hold on
 plot(f_vector,20*log10(abs(fftshift(fft(y3)))));
-legend('0.99','0.9','0.7')
+legend('r = 0.99','r = 0.9','r = 0.7')
+xlabel('Frecuencia rad/muestra')
+ylabel('Amplitud dB')
+title('Respuesta a Impulso con  \theta = pi/3 para diferentes r')
 
 %% 3
 load('nspeech.mat');
@@ -49,9 +55,14 @@ fn = 1685/4000 * pi;
 senal_filtrada = filtro1(nspeech,fn);
 subplot 211
 plot(20*log10(abs(fft(nspeech))))
+xlabel('Frecuencia Hz')
+ylabel('Amplitud dB')
+title('nspeech')
 subplot 212
 plot(20*log10(abs(fft(senal_filtrada))))
-
+xlabel('Frecuencia Hz')
+ylabel('Amplitud dB')
+title('nspeech pasado por filtor FIR')
 %% 4
 load('pcm.mat')
 wn = 3146/4000 * pi;
