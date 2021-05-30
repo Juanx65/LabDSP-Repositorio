@@ -1,8 +1,12 @@
 %% 1
 x=[1, zeros([1,1000])];
-theta= pi/6;
+theta= 0;
 y=filtro1(x,theta);
+
 stem(y(1:10))
+xlabel('Muestra')
+ylabel('Amplitud')
+title('Respuesta a Impulso con \theta = 0')
 
 %% 1 resp frec
 y1=filtro1(x,pi/6);
@@ -14,6 +18,10 @@ hold on
 plot(f_vector,20*log10(abs(fftshift(fft(y2)))));
 hold on
 plot(f_vector,20*log10(abs(fftshift(fft(y3)))));
+legend(' \theta = pi/6',' \theta = pi/3',' \theta = pi/2')
+xlabel('Frecuencia') %??????? q unidad? 
+ylabel('Amplitud dB')
+title('Magnitud de respuesta en frecuencia')
 
 %% 2
 x=[1, zeros([1,1000])];
