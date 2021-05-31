@@ -67,12 +67,10 @@ xlabel('Muestras');ylabel('Amplitud');
 figure
 subplot 211
 plot(W,20*log10(abs(H)))
-xlim([0 0.5]);
 title('Magnitud rectwin');
 xlabel('Frecuencia rad/muestra');ylabel('Amplitud dB');
 subplot 212
 plot(W,angle(H))
-xlim([0 0.5]);
 title('Fase rectwin');
 xlabel('Frecuencia rad/muestra');ylabel('Fase rad');
 
@@ -80,12 +78,10 @@ xlabel('Frecuencia rad/muestra');ylabel('Fase rad');
 figure
 subplot 211
 plot(W,20*log10(abs(H)))
-xlim([0 0.5]);
 title('Magnitud hann');
 xlabel('Frecuencia rad/muestra');ylabel('Amplitud dB');
 subplot 212
 plot(W,angle(H))
-xlim([0 0.5]);
 title('Fase hann');
 xlabel('Frecuencia rad/muestra');ylabel('Fase rad');
 
@@ -93,12 +89,10 @@ xlabel('Frecuencia rad/muestra');ylabel('Fase rad');
 figure
 subplot 211
 plot(W,20*log10(abs(H)))
-xlim([0 0.5]);
 title('Magnitud hamming');
 xlabel('Frecuencia rad/muestra');ylabel('Amplitud dB');
 subplot 212
 plot(W,angle(H))
-xlim([0 0.5]);
 title('Fase hamming');
 xlabel('Frecuencia rad/muestra');ylabel('Fase rad');
 
@@ -106,12 +100,10 @@ xlabel('Frecuencia rad/muestra');ylabel('Fase rad');
 figure
 subplot 211
 plot(W,20*log10(abs(H)))
-xlim([0 0.5]);
 title('Magnitud blackman');
 xlabel('Frecuencia rad/muestra');ylabel('Amplitud dB');
 subplot 212
 plot(W,angle(H))
-xlim([0 0.5]);
 title('Fase blackman');
 xlabel('Frecuencia rad/muestra');ylabel('Fase rad');
 
@@ -119,12 +111,10 @@ xlabel('Frecuencia rad/muestra');ylabel('Fase rad');
 figure
 subplot 211
 plot(W,20*log10(abs(H)))
-xlim([0 0.5]);
 title('Magnitud bartlett');
 xlabel('Frecuencia rad/muestra');ylabel('Amplitud dB');
 subplot 212
 plot(W,angle(H))
-xlim([0 0.5]);
 title('Fase bartlett');
 xlabel('Frecuencia rad/muestra');ylabel('Fase rad');
 %% funcions
