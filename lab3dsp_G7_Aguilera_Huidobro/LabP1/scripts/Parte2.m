@@ -43,16 +43,90 @@ ylabel('fase rad');
 %% 2)
 N = 100;
 subplot 511
-wvtool(rectwin(N))
+plot(rectwin(N))
+title('rectwin')
+xlabel('Muestras');ylabel('Amplitud');
 subplot 512
-wvtool(hann(N))
+plot(hann(N))
+title('hann')
+xlabel('Muestras');ylabel('Amplitud');
 subplot 513
-wvtool(hamming(N))
+plot(hamming(N))
+title('hamming')
+xlabel('Muestras');ylabel('Amplitud');
 subplot 514
-wvtool(blackman(N))
+plot(blackman(N))
+title('blackman')
+xlabel('Muestras');ylabel('Amplitud');
 subplot 515
-wvtool(bartlett(N))
+plot(bartlett(N))
+title('bartlett')
+xlabel('Muestras');ylabel('Amplitud');
 
+[H,W]=freqz(rectwin(N),N);
+figure
+subplot 211
+plot(W,20*log10(abs(H)))
+xlim([0 0.5]);
+title('Magnitud rectwin');
+xlabel('Frecuencia rad/muestra');ylabel('Amplitud dB');
+subplot 212
+plot(W,angle(H))
+xlim([0 0.5]);
+title('Fase rectwin');
+xlabel('Frecuencia rad/muestra');ylabel('Fase rad');
+
+[H,W]=freqz(hann(N),N);
+figure
+subplot 211
+plot(W,20*log10(abs(H)))
+xlim([0 0.5]);
+title('Magnitud hann');
+xlabel('Frecuencia rad/muestra');ylabel('Amplitud dB');
+subplot 212
+plot(W,angle(H))
+xlim([0 0.5]);
+title('Fase hann');
+xlabel('Frecuencia rad/muestra');ylabel('Fase rad');
+
+[H,W]=freqz(hamming(N),N);
+figure
+subplot 211
+plot(W,20*log10(abs(H)))
+xlim([0 0.5]);
+title('Magnitud hamming');
+xlabel('Frecuencia rad/muestra');ylabel('Amplitud dB');
+subplot 212
+plot(W,angle(H))
+xlim([0 0.5]);
+title('Fase hamming');
+xlabel('Frecuencia rad/muestra');ylabel('Fase rad');
+
+[H,W]=freqz(blackman(N),N);
+figure
+subplot 211
+plot(W,20*log10(abs(H)))
+xlim([0 0.5]);
+title('Magnitud blackman');
+xlabel('Frecuencia rad/muestra');ylabel('Amplitud dB');
+subplot 212
+plot(W,angle(H))
+xlim([0 0.5]);
+title('Fase blackman');
+xlabel('Frecuencia rad/muestra');ylabel('Fase rad');
+
+[H,W]=freqz(bartlett(N),N);
+figure
+subplot 211
+plot(W,20*log10(abs(H)))
+xlim([0 0.5]);
+title('Magnitud bartlett');
+xlabel('Frecuencia rad/muestra');ylabel('Amplitud dB');
+subplot 212
+plot(W,angle(H))
+xlim([0 0.5]);
+title('Fase bartlett');
+xlabel('Frecuencia rad/muestra');ylabel('Fase rad');
 %% funcions
 function y = ventana1(w,N)
     x = zeros([1,N]);
