@@ -52,15 +52,17 @@ load('nspeech.mat');
 %plot_fft_mag(nspeech,fs)
 frec = 1685;
 fn = 1685/4000 * pi;
-senal_filtrada = filtro1(nspeech,fn);
+senal_filtrada = FIR_filter(nspeech,fn);
 f_vector= -4000:2*4000/length(nspeech):4000-4000/length(nspeech);
+f_vector2= -4000:2*4000/length(senal_filtrada):4000-4000/length(senal_filtrada);
 subplot 211
 plot(f_vector,20*log10(abs(fftshift(fft(nspeech)))))
 xlabel('Frecuencia Hz')
 ylabel('Amplitud dB')
 title('nspeech')
 subplot 212
-plot(f_vector,20*log10(abs(fftshift(fft(senal_filtrada)))))
+plot(f_vector2,20*log10(abs(fftshift(fft(senal_filtrada)))))
+ylim([-60 80])
 xlabel('Frecuencia Hz')
 ylabel('Amplitud dB')
 title('nspeech pasado por filtor FIR')
@@ -70,17 +72,20 @@ fn = 1685/4000 * pi;
 f_vector= -4000:2*4000/length(nspeech):4000-4000/length(nspeech);
 senal_filtrada2 = filter([1 -2*cos(fn) 1],[1 0 0], nspeech);
 subplot 211
-plot(f_vector,20*log10(abs(fftshift(fft(senal_filtrada)))))
+plot(f_vector2,20*log10(abs(fftshift(fft(senal_filtrada)))))
+ylim([-60 80])
 xlabel('Frecuencia Hz')
 ylabel('Amplitud dB')
-title('FIR_filter')
+title('FIR filter')
 subplot 212
 plot(f_vector,20*log10(abs(fftshift(fft(senal_filtrada2)))))
+ylim([-60 80])
 xlabel('Frecuencia Hz')
 ylabel('Amplitud dB')
 title('filter Matlab')
 %% 4
 load('pcm.mat')
+plot_fft_mag(pcm,fs)
 wn = 3146/4000 * pi;
 aCoeff = [-2*0.99*cos(wn) 0.99^2];
 yBuff = [0, 0];
@@ -89,6 +94,36 @@ for i=1:length(pcm)
     yBuff = IIR_filter(yBuff, aCoeff, pcm(i));
     filtered_pcm(i) = yBuff(1);
 end
+
+
+f_vector= -4000:2*4000/length(pcm):4000-4000/length(pcm);
+f_vector2= -4000:2*4000/length(filtered_pcm):4000-4000/length(filtered_pcm);
+subplot 211
+plot(f_vector,abs(fftshift(fft(pcm))))
+grid on
+xlabel('Frecuencia Hz')
+ylabel('Amplitud')
+title('pcm')
+subplot 212
+plot(f_vector2,abs(fftshift(fft(filtered_pcm))))
+grid on
+xlabel('Frecuencia Hz')
+ylabel('Amplitud')
+title('pcm pasado por filtor IIR')
+
+figure 
+subplot 211
+plot(pcm)
+grid on
+xlabel('Muestras')
+ylabel('Amplitud')
+title('pcm')
+subplot 212
+plot(filtered_pcm)
+grid on
+xlabel('Muestras')
+ylabel('Amplitud')
+title('pcm pasado por filtor IIR')
 %% Funciones
 
 function y = filtro1(x, theta)
@@ -121,19 +156,10 @@ end
 end
 
 function y = FIR_filter(x,theta)
-delta=[1, zeros([1,2])];
-y=zeros(1,length(x));
-h=filtro1(delta,theta);
-for k=1:length(x)
-    for i=1:length(x)
-        if i-k > 0
-            if i-k < 4
-                y(k)=y(k)+x(k)*h(i-k);
-            end
-        end
-    end
-end
-
+b = [1 -2*cos(theta) 1]; 
+a = [1 0 0];
+h = impz(b,a); % respuesta impulso del filtro digital con coeficientes b, a
+y = conv(h,x);
 end
 function y = IIR_filter(yBuff, aCoeff, x)
     y_new = x - aCoeff(1)*yBuff(1) - aCoeff(2)*yBuff(2);
