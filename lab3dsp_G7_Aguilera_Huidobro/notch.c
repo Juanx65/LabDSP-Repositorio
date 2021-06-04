@@ -50,7 +50,7 @@ static double filterBiquad(bqState_t *filterNState, double filterInput);
 extern double notch(double data)
 {
     int frec = 440;
-    int BW = 200;
+    int BW = 50;
     int fs = 16000;
     
     double theta = 2*3.14159265358979323846*frec/fs;
