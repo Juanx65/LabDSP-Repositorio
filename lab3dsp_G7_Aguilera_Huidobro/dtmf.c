@@ -71,7 +71,7 @@ static double filterBiquad(bqState_t *filterNState, double filterInput);
 ******************************************************************************/
 double bandpass_filter(double data, bqState_t *filterNState, int frec)
 {
-    int BW = 5;
+    int BW = 15;
     int fs = 16000;
     
     double theta = 2*3.14159265358979323846*frec/fs;
@@ -167,7 +167,6 @@ void decodeDtmf(double input1, int32_t *output1)
     tonesInputs[5] = bandpass_filter(input1,&filtro5,1336);
     tonesInputs[6] = bandpass_filter(input1,&filtro6,1477);
     
-    //output1=tonesInputs[4];   
     *output1 = dtmfDetection(tonesInputs);
 }
 
