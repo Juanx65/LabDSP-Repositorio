@@ -1,24 +1,22 @@
-/******************************************************************************
-* \file     Lab3p2.c
+/***************************************************************************//**
+* \file     Funciones que deben impementar los alumnos
 *
-* \brief    Experiencia 3 de laboratorio DSP ELO314
+* \brief    
 *
 * \authors  Gonzalo Carrasco
-******************************************************************************/
+*******************************************************************************/
 
 /******************************************************************************
 **      HEADER FILES
 ******************************************************************************/
-#include "dlu_global_defs.h"
-#include "L138_LCDK_aic3106_init.h"
-#include "dsp_lab_utils.h"
-#include <math.h>
-#include "dlu_codec_config.h"
-#include "template.h"
+#include <dtmf.h>
+#include <stdint.h>
+#include <stdbool.h>
 
 /******************************************************************************
 **      MODULE PREPROCESSOR CONSTANTS
 ******************************************************************************/
+
 
 /******************************************************************************
 **      MODULE MACROS
@@ -33,240 +31,145 @@
 /*
  * Estructura de estado de filtros biquad
  */
-typedef struct bqStatus_t {
-    float bqA1;
-    float bqA2;
-    float bqB0;
-    float bqB1;
-    float bqB2;
-    float bqInput[3];
-    float bqOutput[3];
-} bqStatus_t;
+typedef struct bqState_t {
+    double bqA1;
+    double bqA2;
+    double bqB0;
+    double bqB1;
+    double bqB2;
+    double bqInput[3];
+    double bqOutput[3];
+} bqState_t;
 
 /******************************************************************************
 **      MODULE VARIABLE DEFINITIONS
 ******************************************************************************/
 
 /*---------------------------------------------------------------------------*/
-/* ENTRADAS Y SALIDAS DEL AIC CODEC */
-/*---------------------------------------------------------------------------*/
-/*
- * Tipo de dato para el CODEC (Union)
- */
-AIC31_data_type codec_data;
-
-/*
- * Varibles de entrada y salida en formato flotante
- */
-float floatCodecInputR,floatCodecInputL;
-float floatCodecOutputR,floatCodecOutputL;
-
-/*
- * Variables de estado de salida saturada
- */
-int outSaturationStat = 0;
-
-//#pragma DATA_SECTION(audioBufferR,".EXT_RAM")
-//#pragma DATA_SECTION(audioBufferL,".EXT_RAM")
-
-/*---------------------------------------------------------------------------*/
-/* VARABLES DETECTOR DTMF */
+/* VARABLES DECTOR DTMF */
 /*---------------------------------------------------------------------------*/
 /* Se�ales de salida para cada filtro */
-float dtmfTones[7];
-
-int32_t framePos = 0;
-float tonesAmplitud[7]={0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
-float tonesAmpAux[7]={0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
-int32_t dtmfSymbol = 0;
+double gDtmfTones[7] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+int32_t gFramePos = 0;
+double gTonesAmplitud[7] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+double gTonesAmpAux[7] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
 
 /*---------------------------------------------------------------------------*/
-/* VARABLES FILTRO NOTCH */
+/* VARABLES BPF */
 /*---------------------------------------------------------------------------*/
-bqStatus_t tuneBsfState = { // Inicialmente para 500Hz y 100Hz de bw
-0.0,                // CALCULAR PAR�METRO
-0.0,                // CALCULAR PAR�METRO
-0.0,                // CALCULAR PAR�METRO
-0.0,                // CALCULAR PAR�METRO
-0.0,                // CALCULAR PAR�METRO
-{0.0, 0.0, 0.0},
-{0.0, 0.0, 0.0}
-};
-
-float filter_notch(float input)
-{
-    bqState_t filtro_notch = {
-      1.9308,
-      0.96,
-      1,
-      -1.9702,
-      1,
-      {0,0,0},
-      {0,0,0},
-      0.98};
-
-      return filterBiquad(filtro_notch, input);
-}
-
-float tuneBsfOutput = 0.0;
-float notchFreq     = 20.0;
-
 
 /******************************************************************************
 **      PRIVATE FUNCTION DECLARATIONS (PROTOTYPES)
 ******************************************************************************/
-float filterBiquad(bqStatus_t *filterNState, float filterInput);
-void notchUpdate(float tuneFreq);
-void envelopeDetector(float *tonesInputs);
-void dtmfDetection(float *tonesInputs);
+void envelopeDetector(double *tonesInputs);
+int32_t dtmfDetection(double *tonesInputs);
+double bandpass_filter(double data, bqState_t *filterNState, int frec);
+static double filterBiquad(bqState_t *filterNState, double filterInput);
 
 /******************************************************************************
 **      FUNCTION DEFINITIONS
 ******************************************************************************/
-
-interrupt void interrupt4(void) // interrupt service routine
+double bandpass_filter(double data, bqState_t *filterNState, int frec)
 {
-//#############################################################################
-        /*-------------------------------------------------------------------*/
-        /* LECTURA DE ENTRADAS DEL CODEC */
-        /*-------------------------------------------------------------------*/
-        DLU_readCodecInputs(&floatCodecInputL, &floatCodecInputR);
+    int BW = 15;
+    int fs = 16000;
+    
+    double theta = 2*3.14159265358979323846*frec/fs;
+    double bw = 2*3.14159265358979323846*BW/fs;
+    double d = (1-sin(bw))/cos(bw);
+    double gain = (1-d)/2;
+    filterNState->bqA1=-(1+d)*cos(theta);
+    filterNState->bqA2=d;
+    filterNState->bqB0=gain;
+    filterNState->bqB1=0;
+    filterNState->bqB2=-gain;
 
-        /*-------------------------------------------------------------------*/
-        /* Inicia medici�n de tiempo de ejecuci�n */
-        DLU_tic();
-        /*-------------------------------------------------------------------*/
-        /* FILTRO NOTCH SINTONIZABLE */
-        /*-------------------------------------------------------------------*/
-        tuneBsfOutput = 0.0;
-
-        /*-------------------------------------------------------------------*/
-        /* FILTROS PARA DTMF */
-        /*-------------------------------------------------------------------*/
-//        dtmfTones[0] = 0.0;
-//        dtmfTones[1] = 0.0;
-//        dtmfTones[2] = 0.0;
-//        dtmfTones[3] = 0.0;
-//        dtmfTones[4] = 0.0;
-//        dtmfTones[5] = 0.0;
-//        dtmfTones[6] = 0.0;
-//
-//        dtmfDetection(dtmfTones);
-
-        /*-------------------------------------------------------------------*/
-        /* PARA VISUALIZAR EN GR�FICO */
-        /*-------------------------------------------------------------------*/
-        triggerSyncGraphBuff();
-        fillGraphBuff1(floatCodecInputL);
-        fillGraphBuff2(tuneBsfOutput);
-
-        /*-------------------------------------------------------------------*/
-        /* ESCRITURA EN SALIDA DEL CODEC */
-        /*-------------------------------------------------------------------*/
-        floatCodecOutputL = floatCodecInputL;
-        floatCodecOutputR = tuneBsfOutput;
-
-        /* Medici�n de tiempo de ejecuci�n */
-        DLU_toc();
-
-        outSaturationStat = DLU_writeCodecOutputs(floatCodecOutputL,floatCodecOutputR);
-
-//#############################################################################
-    return;
+      return filterBiquad(filterNState, data);
 }
-
-void main()
-{
-    /* Inicializaci�n de Pulsadores User 1 y User 2 */
-    DLU_initPushButtons();
-    /* Inicializa funci�n de medici�n de tiempos de ejecuci�n */
-    DLU_initTicToc();
-    /* Inicializacion BSL y AIC31 Codec */
-    L138_initialise_intr(CODEC_FS, CODEC_ADC_GAIN, CODEC_DAC_ATTEN, CODEC_INPUT_CFG);
-    /* Inicializaci�n de LEDs */
-    DLU_initLeds();
-
-   /* Loop infinito a espera de interrupci�n del Codec */
-    while(1);
-}
-
-/******************************************************************************
-*   \brief  Esta funci�n implementa una etapa de filtro biquad
+/***************************************************************************//**
+*   \brief 
 *
-*   \param filterNState     : puntero a la estructura del biquad a ejecutar
-*   \param filterInput      : se�al de entrada al filtro biquad a ejecutar
-*
-*   \return filterOutput    : se�al de salida del filtro biquad ejecutado
-******************************************************************************/
-float filterBiquad(bqStatus_t *filterNState, float filterInput){
-    // COMPLETAR
-    filterNState.bqInput[2]=filterNState.bqInput[1];
-    filterNState.bqInput[1]=filterNState.bqInput[0];
-    filterNState.bqInput[0]=filterInput;
-    filterNState.bqOutput[2]=filterNState.bqOutput[1];
-    filterNState.bqOutput[1]=filterNState.bqOutput[0];
-    filterNState.bqOutput[0]=((filterNstate.bqB0*filterNState.bqInput[0]+filterNstate.bqB1*filterNstate.bqInput[1]
-            +filterNstate.bqB2*filterNstate.bqInput[2])-(filterNstate.bqA1*filterNstate.bqOutput[1]
-            +filterNstate.bqA2*filterNstate.bqOutput[2]);
-    return filterNState.bqOutput[0];
-    /* Se retorna la salida */
-}
-
-/******************************************************************************
-*   \brief Esta funci�n modifica los par�metros del filtro notch para ajustar
-*           su frecuencia de sinton�a. El ancho de banda en cambio se mantiene
-*           constante y dependiente de la constante TUNE_BSF_D.
-*
-*   \param tuneFreq :  es la frecuencia de sinton�a deseada en Hz.
+*   \param  input : 
 *
 *   \return Void.
-******************************************************************************/
-void notchUpdate(float tuneFreq){
-    // COMPLETAR
+*******************************************************************************/
+void decodeDtmf(double input1, int32_t *output1)
+{
+    double tonesInputs[7];
+    static bqState_t filtro0 = {
+        0,
+        0,
+        0,
+        0,
+        0,
+        {0,0,0},
+        {0,0,0}
+    };
+    static bqState_t filtro1 = {
+        0,
+        0,
+        0,
+        0,
+        0,
+        {0,0,0},
+        {0,0,0}
+    };
+    static bqState_t filtro2 = {
+        0,
+        0,
+        0,
+        0,
+        0,
+        {0,0,0},
+        {0,0,0}
+    };
+    static bqState_t filtro3 = {
+        0,
+        0,
+        0,
+        0,
+        0,
+        {0,0,0},
+        {0,0,0}
+    };
+    static bqState_t filtro4 = {
+        0,
+        0,
+        0,
+        0,
+        0,
+        {0,0,0},
+        {0,0,0}
+    };
+    static bqState_t filtro5 = {
+        0,
+        0,
+        0,
+        0,
+        0,
+        {0,0,0},
+        {0,0,0}
+    };
+    static bqState_t filtro6 = {
+        0,
+        0,
+        0,
+        0,
+        0,
+        {0,0,0},
+        {0,0,0}
+    };
+    tonesInputs[0] = bandpass_filter(input1,&filtro0,697);
+    tonesInputs[1] = bandpass_filter(input1,&filtro1,770);
+    tonesInputs[2] = bandpass_filter(input1,&filtro2,852);
+    tonesInputs[3] = bandpass_filter(input1,&filtro3,941);
+    tonesInputs[4] = bandpass_filter(input1,&filtro4,1209);
+    tonesInputs[5] = bandpass_filter(input1,&filtro5,1336);
+    tonesInputs[6] = bandpass_filter(input1,&filtro6,1477);
+    
+    *output1 = dtmfDetection(tonesInputs);
 }
 
-/******************************************************************************
-*   \brief Esta funci�n permite detectar de forma sencilla la envolvente
-*           de los tonos filtrados.
-*           Una vez se retorna de la funci�n quedan actualizados los valores
-*           de la variable 'tonesAmplitud'.
-
-*   \param *tonesInputs : puntero a arreglo de canales filtrados
-*
-*   \return Void
-******************************************************************************/
-void envelopeDetector(float *tonesInputs) {
-    int32_t idxTones;
-
-    if( fabs( tonesInputs[0] ) > tonesAmpAux[0])
-        tonesAmpAux[0] = fabs( tonesInputs[0] );
-    if( fabs( tonesInputs[1] ) > tonesAmpAux[1])
-        tonesAmpAux[1] = fabs( tonesInputs[1] );
-    if( fabs( tonesInputs[2] ) > tonesAmpAux[2])
-        tonesAmpAux[2] = fabs( tonesInputs[2] );
-    if( fabs( tonesInputs[3] ) > tonesAmpAux[3])
-        tonesAmpAux[3] = fabs( tonesInputs[3] );
-    if( fabs( tonesInputs[4] ) > tonesAmpAux[4])
-        tonesAmpAux[4] = fabs( tonesInputs[4] );
-    if( fabs( tonesInputs[5] ) > tonesAmpAux[5])
-        tonesAmpAux[5] = fabs( tonesInputs[5] );
-    if( fabs( tonesInputs[6] ) > tonesAmpAux[6])
-        tonesAmpAux[6] = fabs( tonesInputs[6] );
-
-    framePos++;
-    if ( framePos > DTMF_ENV_FRAME_SIZE )
-    {
-        framePos = 0;
-
-        for (idxTones = 0; idxTones < 7; idxTones++)
-        {
-            tonesAmplitud[idxTones] = 0.5 * (tonesAmpAux[idxTones] + tonesAmplitud[idxTones]);
-            tonesAmpAux[idxTones] = 0.0;
-        }
-
-    }
-
-}
 
 /******************************************************************************
 *   \brief Funci�n que actualiza el estado de los leds para indicar s�mbolo
@@ -278,52 +181,54 @@ void envelopeDetector(float *tonesInputs) {
 *
 *   \return Void
 ******************************************************************************/
-void dtmfDetection(float *tonesInputs) {
-    float levelAux;
-    int32_t dtmf_row = 0;
-    int32_t dtmf_col = 0;
+int32_t dtmfDetection(double *tonesInputs)
+{
+    double levelAux;
+	int32_t dtmfSymbol = 0;
+    int32_t dtmfRow = 0;
+    int32_t dtmfCol = 0;
     /*-----------------------------------------------------------------------*/
     /* Actualizaci�n de amplitudes */
     envelopeDetector(tonesInputs);
 
     /* Promedio de canales */
-    levelAux = 0.143 * (tonesAmplitud[0] +
-            tonesAmplitud[1] +
-            tonesAmplitud[2] +
-            tonesAmplitud[3] +
-            tonesAmplitud[4] +
-            tonesAmplitud[5] +
-            tonesAmplitud[6] );
+    levelAux = 0.143 * ( gTonesAmplitud[0] +
+            gTonesAmplitud[1] +
+            gTonesAmplitud[2] +
+            gTonesAmplitud[3] +
+            gTonesAmplitud[4] +
+            gTonesAmplitud[5] +
+            gTonesAmplitud[6] );
     /*-----------------------------------------------------------------------*/
     /* Detecci�n de canal bajo */
     do
     {
         /* �Ser� fila 1? */
-        levelAux = tonesAmplitud[0] / (tonesAmplitud[1] + tonesAmplitud[2] +tonesAmplitud[3]);
+        levelAux = gTonesAmplitud[0] / (gTonesAmplitud[1] + gTonesAmplitud[2] +gTonesAmplitud[3]);
         if (levelAux > DTMF_CH_SNR_RATE)
         {
-            dtmf_row = 1;
+            dtmfRow = 1;
             break;
         }
         /* �Ser� fila 2? */
-        levelAux = tonesAmplitud[1] / (tonesAmplitud[0] + tonesAmplitud[2] +tonesAmplitud[3]);
+        levelAux = gTonesAmplitud[1] / (gTonesAmplitud[0] + gTonesAmplitud[2] +gTonesAmplitud[3]);
         if (levelAux > DTMF_CH_SNR_RATE)
         {
-            dtmf_row = 2;
+            dtmfRow = 2;
             break;
         }
         /* �Ser� fila 3? */
-        levelAux = tonesAmplitud[2] / (tonesAmplitud[1] + tonesAmplitud[0] +tonesAmplitud[3]);
+        levelAux = gTonesAmplitud[2] / (gTonesAmplitud[1] + gTonesAmplitud[0] +gTonesAmplitud[3]);
         if (levelAux > DTMF_CH_SNR_RATE)
         {
-            dtmf_row = 3;
+            dtmfRow = 3;
             break;
         }
         /* �Ser� fila 4? */
-        levelAux = tonesAmplitud[3] / (tonesAmplitud[1] + tonesAmplitud[2] +tonesAmplitud[0]);
+        levelAux = gTonesAmplitud[3] / (gTonesAmplitud[1] + gTonesAmplitud[2] +gTonesAmplitud[0]);
         if (levelAux > DTMF_CH_SNR_RATE)
         {
-            dtmf_row = 4;
+            dtmfRow = 4;
             break;
         }
 
@@ -334,24 +239,24 @@ void dtmfDetection(float *tonesInputs) {
     do
     {
         /* �Ser� columna 1? */
-        levelAux = tonesAmplitud[4] / (tonesAmplitud[5] + tonesAmplitud[6]);
+        levelAux = gTonesAmplitud[4] / (gTonesAmplitud[5] + gTonesAmplitud[6]);
         if (levelAux > DTMF_CH_SNR_RATE)
         {
-            dtmf_col = 1;
+            dtmfCol = 1;
             break;
         }
         /* �Ser� columna 2? */
-        levelAux = tonesAmplitud[5] / (tonesAmplitud[4] + tonesAmplitud[6]);
+        levelAux = gTonesAmplitud[5] / (gTonesAmplitud[4] + gTonesAmplitud[6]);
         if (levelAux > DTMF_CH_SNR_RATE)
         {
-            dtmf_col = 2;
+            dtmfCol = 2;
             break;
         }
         /* �Ser� columna 3? */
-        levelAux = tonesAmplitud[6] / (tonesAmplitud[4] + tonesAmplitud[5]);
+        levelAux = gTonesAmplitud[6] / (gTonesAmplitud[4] + gTonesAmplitud[5]);
         if (levelAux > DTMF_CH_SNR_RATE)
         {
-            dtmf_col = 3;
+            dtmfCol = 3;
             break;
         }
 
@@ -359,104 +264,72 @@ void dtmfDetection(float *tonesInputs) {
 
     /*-----------------------------------------------------------------------*/
     /* Decodificaci�n de n�mero de s�mbolo */
-    if ( ( dtmf_row >= 1 ) && (dtmf_col >= 1) )
-        dtmfSymbol = dtmf_col + 3*(dtmf_row - 1);
+    if ( ( dtmfRow >= 1 ) && (dtmfCol >= 1) )
+	{
+        dtmfSymbol = dtmfCol + 3*(dtmfRow - 1);
+	}
     else
+	{
         dtmfSymbol = 0;
+	}
 
-    /*-----------------------------------------------------------------------*/
-    /* Actualizaci�n de LEDs */
-    if ( dtmfSymbol == 1) // S�mbolo: 1
+	return (dtmfSymbol);
+}
+/******************************************************************************/
+static double filterBiquad(bqState_t *filterNState, double filterInput)
+{
+    filterNState->bqInput[2]=filterNState->bqInput[1];
+    filterNState->bqInput[1]=filterNState->bqInput[0];
+    filterNState->bqInput[0]=filterInput;
+    filterNState->bqOutput[2]=filterNState->bqOutput[1];
+    filterNState->bqOutput[1]=filterNState->bqOutput[0];
+    filterNState->bqOutput[0]=((filterNState->bqB0*filterNState->bqInput[0]+filterNState->bqB1*filterNState->bqInput[1]
+            +filterNState->bqB2*filterNState->bqInput[2])-(filterNState->bqA1*filterNState->bqOutput[1]
+            +filterNState->bqA2*filterNState->bqOutput[2]));
+    return filterNState->bqOutput[0];
+}
+/******************************************************************************
+*   \brief Esta funci�n permite detectar de forma sencilla la envolvente
+*           de los tonos filtrados.
+*           Una vez se retorna de la funci�n quedan actualizados los valores
+*           de la variable 'gTonesAmplitud'.
+
+*   \param *tonesInputs : puntero a arreglo de canales filtrados
+*
+*   \return Void
+******************************************************************************/
+void envelopeDetector(double *tonesInputs)
+{
+    int32_t idxTones;
+
+    if( fabs( tonesInputs[0] ) > gTonesAmpAux[0])
+        gTonesAmpAux[0] = fabs( tonesInputs[0] );
+    if( fabs( tonesInputs[1] ) > gTonesAmpAux[1])
+        gTonesAmpAux[1] = fabs( tonesInputs[1] );
+    if( fabs( tonesInputs[2] ) > gTonesAmpAux[2])
+        gTonesAmpAux[2] = fabs( tonesInputs[2] );
+    if( fabs( tonesInputs[3] ) > gTonesAmpAux[3])
+        gTonesAmpAux[3] = fabs( tonesInputs[3] );
+    if( fabs( tonesInputs[4] ) > gTonesAmpAux[4])
+        gTonesAmpAux[4] = fabs( tonesInputs[4] );
+    if( fabs( tonesInputs[5] ) > gTonesAmpAux[5])
+        gTonesAmpAux[5] = fabs( tonesInputs[5] );
+    if( fabs( tonesInputs[6] ) > gTonesAmpAux[6])
+        gTonesAmpAux[6] = fabs( tonesInputs[6] );
+
+    gFramePos++;
+    if ( gFramePos > DTMF_ENV_FRAME_SIZE )
     {
-                    DLU_writeLedD4(LED_OFF);
-                    DLU_writeLedD5(LED_OFF);
-                    DLU_writeLedD6(LED_OFF);
-                    DLU_writeLedD7(LED_ON);
+        gFramePos = 0;
+
+        for (idxTones = 0; idxTones < 7; idxTones++)
+        {
+            gTonesAmplitud[idxTones] = 0.5 * (gTonesAmpAux[idxTones] + gTonesAmplitud[idxTones]);
+            gTonesAmpAux[idxTones] = 0.0;
+        }
+
     }
-    else if ( dtmfSymbol == 2) // S�mbolo: 2
-    {
-                    DLU_writeLedD4(LED_OFF);
-                    DLU_writeLedD5(LED_OFF);
-                    DLU_writeLedD6(LED_ON);
-                    DLU_writeLedD7(LED_OFF);
-    }
-    else if ( dtmfSymbol == 3) // S�mbolo: 3
-    {
-                    DLU_writeLedD4(LED_OFF);
-                    DLU_writeLedD5(LED_OFF);
-                    DLU_writeLedD6(LED_ON);
-                    DLU_writeLedD7(LED_ON);
-    }
-    else if ( dtmfSymbol == 4) // S�mbolo: 4
-    {
-                    DLU_writeLedD4(LED_OFF);
-                    DLU_writeLedD5(LED_ON);
-                    DLU_writeLedD6(LED_OFF);
-                    DLU_writeLedD7(LED_OFF);
-    }
-    else if ( dtmfSymbol == 5) // S�mbolo: 5
-    {
-                    DLU_writeLedD4(LED_OFF);
-                    DLU_writeLedD5(LED_ON);
-                    DLU_writeLedD6(LED_OFF);
-                    DLU_writeLedD7(LED_ON);
-    }
-    else if ( dtmfSymbol == 6) // S�mbolo: 6
-    {
-                    DLU_writeLedD4(LED_OFF);
-                    DLU_writeLedD5(LED_ON);
-                    DLU_writeLedD6(LED_ON);
-                    DLU_writeLedD7(LED_OFF);
-    }
-    else if ( dtmfSymbol == 7) // S�mbolo: 7
-    {
-                    DLU_writeLedD4(LED_OFF);
-                    DLU_writeLedD5(LED_ON);
-                    DLU_writeLedD6(LED_ON);
-                    DLU_writeLedD7(LED_ON);
-    }
-    else if ( dtmfSymbol == 8) // S�mbolo: 8
-    {
-                    DLU_writeLedD4(LED_ON);
-                    DLU_writeLedD5(LED_OFF);
-                    DLU_writeLedD6(LED_OFF);
-                    DLU_writeLedD7(LED_OFF);
-    }
-    else if ( dtmfSymbol == 9) // S�mbolo: 9
-    {
-                    DLU_writeLedD4(LED_ON);
-                    DLU_writeLedD5(LED_OFF);
-                    DLU_writeLedD6(LED_OFF);
-                    DLU_writeLedD7(LED_ON);
-    }
-    else if ( dtmfSymbol == 10) // S�mbolo: *
-    {
-                    DLU_writeLedD4(LED_ON);
-                    DLU_writeLedD5(LED_ON);
-                    DLU_writeLedD6(LED_OFF);
-                    DLU_writeLedD7(LED_OFF);
-    }
-    else if ( dtmfSymbol == 11) // S�mbolo: 0
-    {
-                    DLU_writeLedD4(LED_OFF);
-                    DLU_writeLedD5(LED_OFF);
-                    DLU_writeLedD6(LED_OFF);
-                    DLU_writeLedD7(LED_OFF);
-    }
-    else if ( dtmfSymbol == 12) // S�mbolo: #
-    {
-                    DLU_writeLedD4(LED_ON);
-                    DLU_writeLedD5(LED_ON);
-                    DLU_writeLedD6(LED_OFF);
-                    DLU_writeLedD7(LED_ON);
-    }
-    else
-    {
-                    DLU_writeLedD4(LED_ON);
-                    DLU_writeLedD5(LED_ON);
-                    DLU_writeLedD6(LED_ON);
-                    DLU_writeLedD7(LED_ON);
-    }
+
 }
 
 /******************************************************************************
