@@ -5,6 +5,8 @@ N = 70; %orden
 fc = 3000; %
 tm = 16000; % 
 
+%fn = 
+
 W =  fc*2/tm; % 
 
 rect = rectwin(N+1);
