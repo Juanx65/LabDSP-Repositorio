@@ -118,6 +118,14 @@ plot(w(1:1000),20*log10(abs(y(1:1000)))-max(20*log10(abs(y(1:1000)))) );
 %% III
 load('nspeech.mat');
 fft_senal = fft(nspeech);
-w_vector = linspace(-fs/2,fs/2,length(fft_senal));
-plot(w_vector,fft_senal)
-filtro = ;
+w_vector = linspace(0,fs,length(fft_senal));
+%plot(w_vector,fft_senal)
+f=1685.15;
+w=2*pi*f/fs;
+filtro=1-2*cos(w)*exp(-j*2*pi*(w_vector)/fs)+exp(-2*j*2*pi*(w_vector)/fs);
+plot(w_vector,abs(filtro))
+fft_filtrada = fft_senal.*filtro;
+plot(w_vector,fft_filtrada)
+senal_filtrada = ifft(fft_filtrada,"symmetric");
+
+%% IV
