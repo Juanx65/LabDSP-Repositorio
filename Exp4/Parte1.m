@@ -4,18 +4,26 @@ t=0:1/fs:0.1-1/fs;
 s1 = cos(2*pi*100*t);
 s2 = sin(2*pi*100*t);
 
-f1 = fft(s1);
-f2 = fft(s2);
-w1 = linspace(-fs/2,fs/2,500);
-w2 = linspace(0,fs,500);
+f1 = fft(s1,4096);
+f2 = fft(s2,4096);
+w1 = linspace(-fs/2,fs/2,4096);
+w2 = linspace(0,fs,4096);
 subplot 221
 plot(w1,fftshift(f1))
+title('fft de x_2');
+xlabel('Frecuencia Hz');ylabel('Amplitud')
 subplot 222
 plot(w1,fftshift(abs(f2)))
+title('fft de x_1');
+xlabel('Frecuencia Hz');ylabel('Amplitud')
 subplot 223
 plot(w2,f1)
+title('fft de x_2');
+xlabel('Frecuencia Hz');ylabel('Amplitud')
 subplot 224
 plot(w2,abs(f2))
+title('fft de x_1');
+xlabel('Frecuencia Hz');ylabel('Amplitud')
 %% I.3
 fs = 5000;
 t=0:1/fs:0.1-1/fs;
@@ -43,78 +51,136 @@ w2_2048 = linspace(0,2*pi,2048);
 %% Magnitudes
 subplot 321
 plot(w1_256,abs(f1_256))
+title('Magnitud vs Frecuencia de X_2 con N = 256');
+xlabel('Frecuencia Rad/Muestra');ylabel('Amplitud');
 
 subplot 323
 plot(w1_500,abs(f1_500))
+title('Magnitud vs Frecuencia de X_2 con N = 500');
+xlabel('Frecuencia Rad/Muestra');ylabel('Amplitud');
 
 subplot 325
 plot(w1_2048,abs(f1_2048))
+title('Magnitud vs Frecuencia de X_2 con N = 2048');
+xlabel('Frecuencia Rad/Muestra');ylabel('Amplitud');
 
 subplot 322
 plot(w1_256,abs(f2_256))
+title('Magnitud vs Frecuencia de X_1 con N = 256');
+xlabel('Frecuencia Rad/Muestra');ylabel('Amplitud');
 
 subplot 324
 plot(w1_500,abs(f2_500))
+title('Magnitud vs Frecuencia de X_1 con N = 500');
+xlabel('Frecuencia Rad/Muestra');ylabel('Amplitud');
 
 subplot 326
 plot(w1_2048,abs(f2_2048))
+title('Magnitud vs Frecuencia de X_1 con N = 2048');
+xlabel('Frecuencia Rad/Muestra');ylabel('Amplitud');
 
 %% Partes Reales
 subplot 321
 plot(w1_256,real(f1_256))
+title('Real vs Frecuencia de X_2 con N = 256');
+xlabel('Frecuencia Rad/Muestra');ylabel('Amplitud');
 
 subplot 323
 plot(w1_500,real(f1_500))
+title('Real vs Frecuencia de X_2 con N = 500');
+xlabel('Frecuencia Rad/Muestra');ylabel('Amplitud');
 
 subplot 325
 plot(w1_2048,real(f1_2048))
+title('Real vs Frecuencia de X_2 con N = 2048');
+xlabel('Frecuencia Rad/Muestra');ylabel('Amplitud');
 
 subplot 322
 plot(w1_256,real(f2_256))
+title('Real vs Frecuencia de X_1 con N = 256');
+xlabel('Frecuencia Rad/Muestra');ylabel('Amplitud');
 
 subplot 324
 plot(w1_500,real(f2_500))
+title('Real vs Frecuencia de X_1 con N = 500');
+xlabel('Frecuencia Rad/Muestra');ylabel('Amplitud');
 
 subplot 326
 plot(w1_2048,real(f2_2048))
+title('Real vs Frecuencia de X_1 con N = 2048');
+xlabel('Frecuencia Rad/Muestra');ylabel('Amplitud');
 
-%% Partes Reales
+%% Partes Imag
 subplot 321
 plot(w1_256,imag(f1_256))
+title('Imag vs Frecuencia de X_2 con N = 256');
+xlabel('Frecuencia Rad/Muestra');ylabel('Amplitud');
 
 subplot 323
 plot(w1_500,imag(f1_500))
+title('Imag vs Frecuencia de X_2 con N = 500');
+xlabel('Frecuencia Rad/Muestra');ylabel('Amplitud');
 
 subplot 325
 plot(w1_2048,imag(f1_2048))
+title('Imag vs Frecuencia de X_2 con N = 2048');
+xlabel('Frecuencia Rad/Muestra');ylabel('Amplitud');
 
 subplot 322
 plot(w1_256,imag(f2_256))
+title('Imag vs Frecuencia de X_1 con N = 256');
+xlabel('Frecuencia Rad/Muestra');ylabel('Amplitud');
 
 subplot 324
 plot(w1_500,imag(f2_500))
+title('Imag vs Frecuencia de X_1 con N = 500');
+xlabel('Frecuencia Rad/Muestra');ylabel('Amplitud');
 
 subplot 326
 plot(w1_2048,imag(f2_2048))
+title('Imag vs Frecuencia de X_1 con N = 2048');
+xlabel('Frecuencia Rad/Muestra');ylabel('Amplitud');
 
 %% II
 fs = 5000;
 t=0:1/fs:0.1-1/fs;
-senal = 0.5*cos(2*pi*100*t)+1.5*cos(2*pi*500*t)+(sqrt(2)*randn(1,500));
+s_1 = 0.5*cos(2*pi*100*t)+1.5*cos(2*pi*500*t);
+senal = s_1+(sqrt(2)*randn(1,500));
 y=fft(senal);
+y2=fft(s_1);
 w=linspace(0,fs,500);
 plot(w(1:100),abs(y(1:100)));
+hold on
+plot(w(1:100),abs(y2(1:100)));
+        
+title('Magnitud de Señal Comparación');
+xlabel('Frecuencia Hz');ylabel('Amplitud');
+figure
+plot(senal);
+title('Señal sumada a ruido en el tiempo');
+xlabel('Tiempo');ylabel('Amplitud');
 %% dB
 plot(w(1:100),20*log10(abs(y(1:100)))-max(20*log10(abs(y(1:100)))) );
+hold on
+%plot(w(1:100),20*log10(abs(y2(1:100)))-max(20*log10(abs(y2(1:100)))) );
+grid on
+title('Magnitud de Señal en dB Comparación');
+xlabel('Frecuencia Hz');ylabel('Amplitud dB');
 %% duracion 1
 fs = 5000;
 t=0:1/fs:1-1/fs;
-senal = 0.5*cos(2*pi*100*t)+1.5*cos(2*pi*500*t)+(sqrt(2)*randn(1,5000));
+s_1 = 0.5*cos(2*pi*100*t)+1.5*cos(2*pi*500*t);
+senal = s_1 +(sqrt(2)*randn(1,5000));
 y=fft(senal);
+y2 = fft(s_1);
 w=linspace(0,fs,5000);
 %plot(w(1:1000),abs(y(1:1000)));
 plot(w(1:1000),20*log10(abs(y(1:1000)))-max(20*log10(abs(y(1:1000)))) );
-
+hold on
+plot(w(1:1000),20*log10(abs(y2(1:1000)))-max(20*log10(abs(y2(1:1000)))) );
+grid on
+title('Magnitud de Señal en dB Comparación con duración de 1 segundo');
+xlabel('Frecuencia Hz');ylabel('Amplitud dB');
 %% III
 load('nspeech.mat');
 fft_senal = fft(nspeech);
