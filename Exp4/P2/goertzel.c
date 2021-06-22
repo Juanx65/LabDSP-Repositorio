@@ -1,7 +1,7 @@
 /***************************************************************************//**
 * \file     Funciones que deben impementar los alumnos
 *
-* \brief    
+* \brief
 *
 * \authors  Gonzalo Carrasco
 *******************************************************************************/
@@ -30,14 +30,14 @@
 /*
  * Bins arbitrarios.
  */
- 
-#define GOERTZEL1_K_BIN	    	(8)			
+
+#define GOERTZEL1_K_BIN	    	(9)
 #define GOERTZEL2_K_BIN	    	(9)
-#define GOERTZEL3_K_BIN	    	(10)
-#define GOERTZEL4_K_BIN	    	(11)
-#define GOERTZEL5_K_BIN	    	(12)
-#define GOERTZEL6_K_BIN	    	(13)
-#define GOERTZEL7_K_BIN	    	(14)
+#define GOERTZEL3_K_BIN	    	(9)
+#define GOERTZEL4_K_BIN	    	(9)
+#define GOERTZEL5_K_BIN	    	(9)
+#define GOERTZEL6_K_BIN	    	(9)
+#define GOERTZEL7_K_BIN	    	(9)
 
 /*
  * bins para DTMF con N=256 @16 ksps
@@ -61,10 +61,10 @@
  */
 typedef struct goertzelStateTag {
 	uint64_t samplesCounter;
-    double cosW;
+  double cosW;
 	double sinW;
 	double A1;
-    double outputs[3];
+  double outputs[3];
 	double binReal;
 	double binImag;
 	double binMag;
@@ -79,6 +79,12 @@ typedef struct goertzelStateTag {
 /* VARABLES FILTROS GOERTZEL*/
 /*---------------------------------------------------------------------------*/
 goertzelState_t gGoertzelState1 = {0};
+goertzelState_t gGoertzelState2 = {0};
+goertzelState_t gGoertzelState3 = {0};
+goertzelState_t gGoertzelState4 = {0};
+goertzelState_t gGoertzelState5 = {0};
+goertzelState_t gGoertzelState6 = {0};
+goertzelState_t gGoertzelState7 = {0};
 
 
 /******************************************************************************
@@ -112,15 +118,15 @@ void goertzelFunction(double input1,
 				double *output6,
 				double *output7
 				)
-{   
+{
     // Bypass
-	*output1 = input1;
-	*output2 = input1;
-	*output3 = input1;
-	*output4 = input1;
-	*output5 = input1;
-	*output6 = input1;
-	*output7 = input1;
+  *output1 = computeGoertzel(&gGoertzelState1 , input1);
+  *output2 = computeGoertzel(&gGoertzelState2 , input1);
+  *output3 = computeGoertzel(&gGoertzelState3 , input1);
+  *output4 = computeGoertzel(&gGoertzelState4 , input1);
+  *output5 = computeGoertzel(&gGoertzelState5 , input1);
+  *output6 = computeGoertzel(&gGoertzelState6 , input1);
+  *output7 = computeGoertzel(&gGoertzelState7 , input1);
 }
 
 /******************************************************************************
@@ -130,10 +136,15 @@ void goertzelFunction(double input1,
 *   \return  void
 ******************************************************************************/
 extern void initialization(void)
-{	
-	initGoertzel( &gGoertzelState1 , GOERTZEL1_K_BIN );
+{
+  initGoertzel( &gGoertzelState1 , GOERTZEL1_K_BIN );
+  initGoertzel( &gGoertzelState2 , GOERTZEL2_K_BIN );
+  initGoertzel( &gGoertzelState3 , GOERTZEL3_K_BIN );
+  initGoertzel( &gGoertzelState4 , GOERTZEL4_K_BIN );
+  initGoertzel( &gGoertzelState5 , GOERTZEL5_K_BIN );
+  initGoertzel( &gGoertzelState6 , GOERTZEL6_K_BIN );
+  initGoertzel( &gGoertzelState7 , GOERTZEL7_K_BIN );
 
-	
 	return;
 }
 
@@ -147,13 +158,17 @@ extern void initialization(void)
 ******************************************************************************/
 static void initGoertzel(goertzelState_t *state, uint64_t kFrequency)
 {
-	// TO-DO
-	// Inicializar las variables y par�metros de la estructura de estado
-	// en funci�n de las constantes M_PI, GOERTZEL_N  y el argumento kFrequency.
-	state->samplesCounter 	= 0;
-	// state->
-    //...
-	
+  double omega = (2*M_PI*kFrequency/GOERTZEL_N);
+  state->samplesCounter = 0;
+	state->cosW = cos(omega);
+  state->sinW = sin(omega);
+  state->A1= -2*cos(omega);
+  state->outputs[0] = 0.0;
+  state->outputs[0] = 0.0;
+  state->outputs[0] = 0.0;
+  state->binReal=0;
+  state->binImag=0;
+  state->binMag=0;
 	return;
 }
 
@@ -165,12 +180,12 @@ static void initGoertzel(goertzelState_t *state, uint64_t kFrequency)
 ******************************************************************************/
 static void resetGoertzel(goertzelState_t *state)
 {
-	state->samplesCounter 	= 0;
-    state->outputs[0] 		= 0.0;
+	state->samplesCounter = 0;
+  state->outputs[0] 		= 0.0;
 	state->outputs[1] 		= 0.0;
 	state->outputs[2] 		= 0.0;
 	// Se quere retener el �ltimo resultado para el bin sin llevarlos a cero
-	
+
 	return;
 }
 
@@ -188,11 +203,20 @@ static double computeGoertzel(goertzelState_t *state, double filterInput)
 	// Completar todo el algoritmo de Goertzel  usando la estructura de estado,
 	// filterInput y GOERTZEL_N
 	// Existe la funci�n sqrt() provista por el <math.h>
-	
-	
-	
-	
-	return state->binMag;						
+state->outputs[2]=state->outputs[1];
+state->outputs[1]=state->outputs[0];
+state->outputs[0]=filterInput-(state->A1*state->outputs[1])-(state->outputs[2]);
+state->samplesCounter=state->samplesCounter+1;
+
+if(state->samplesCounter==GOERTZEL_N)
+{
+  state->binReal=state->cosW*state->outputs[1]-state->outputs[2];
+  state->binImag=state->sinW*state->outputs[1];
+  state->binMag=sqrt(state->binReal*state->binReal+state->binImag*state->binImag);
+  //state->binMag=state->outputs[0];
+  resetGoertzel(state);
+}
+return state->outputs[0];
 }
 
 /******************************************************************************
