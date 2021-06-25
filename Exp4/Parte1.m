@@ -349,47 +349,91 @@ x4 = zeros([1,8]);
 k=0:7;
 x3(k+1)=exp(-j*2*pi*k/8);
 x4(k+1)=cos(2*pi*k/8);
+w_vector = linspace(-pi,pi,length(x1));
 
 dft1 = DFTmatrix(x1);
 dft2 = DFTmatrix(x2);
 dft3 = DFTmatrix(x3);
 dft4 = DFTmatrix(x4);
+
+dft1s = DFTsum(x1);
+dft2s = DFTsum(x2);
+dft3s = DFTsum(x3);
+dft4s = DFTsum(x4);
+
 subplot 421
-stem(abs(dft1))
+stem(w_vector,fftshift(abs(dft1)),'LineWidth',1.5 )
+title('Magnitud de DFTmatrix( \delta [n] )',"FontSize",16);
+xlabel('Frecuencia Rad/muestra',"FontSize",16);ylabel('Amplitud',"FontSize",16);
 subplot 422
-stem(abs(fft(x1)))
+stem(w_vector,fftshift(abs(fft(x1))),'LineWidth',1.5 )
+title('Magnitud de fft( delta[n] )',"FontSize",16);
+xlabel('Frecuencia Rad/muestra',"FontSize",16);ylabel('Amplitud',"FontSize",16);
 subplot 423
-stem(abs(dft2))
+stem(w_vector,fftshift(abs(dft2)),'LineWidth',1.5 )
+title('Magnitud de DFTmatrix( 1 )',"FontSize",16);
+xlabel('Frecuencia Rad/muestra',"FontSize",16);ylabel('Amplitud',"FontSize",16);
 subplot 424
-stem(abs(fft(x2)))
+stem(w_vector,fftshift(abs(fft(x2))),'LineWidth',1.5 )
+title('Magnitud de fft( 1 )',"FontSize",16);
+xlabel('Frecuencia Rad/muestra',"FontSize",16);ylabel('Amplitud',"FontSize",16);
 subplot 425
-stem(abs(dft3))
+stem(w_vector,fftshift(abs(dft3)),'LineWidth',1.5 )
+title('Magnitud de DFTmatrix( exponencial )',"FontSize",16);
+xlabel('Frecuencia Rad/muestra',"FontSize",16);ylabel('Amplitud',"FontSize",16);
 subplot 426
-stem(abs(fft(x3)))
+stem(w_vector,fftshift(abs(fft(x3))),'LineWidth',1.5 )
+title('Magnitud de fft( exponencial )',"FontSize",16);
+xlabel('Frecuencia Rad/muestra',"FontSize",16);ylabel('Amplitud',"FontSize",16);
 subplot 427
-stem(abs(dft4))
+stem(w_vector,fftshift(abs(dft4)),'LineWidth',1.5 )
+title('Magnitud de DFTmatrix( coseno )',"FontSize",16);
+xlabel('Frecuencia Rad/muestra',"FontSize",16);ylabel('Amplitud',"FontSize",16);
 subplot 428
-stem(abs(fft(x4)))
-error1=immse(dft1,fft(x1));
-error2=immse(dft2,fft(x2));
-error3=immse(dft3,fft(x3));
-error4=immse(dft4,fft(x4));
+stem(w_vector,fftshift(abs(fft(x4))),'LineWidth',1.5 )
+title('Magnitud de fft( coseno )',"FontSize",16);
+xlabel('Frecuencia Rad/muestra',"FontSize",16);ylabel('Amplitud',"FontSize",16);
+error1=immse(dft1,fft(x1))
+error2=immse(dft2,fft(x2))
+error3=immse(dft3,fft(x3))
+error4=immse(dft4,fft(x4))
+error1s=immse(dft1,dft1s)
+error2s=immse(dft2,dft2s)
+error3s=immse(dft3,dft3s)
+error4s=immse(dft4,dft4s)
+
+fs=5000;
+t=0:1/fs:1-1/fs;
+x5=cos(2*pi*100*t);
+nvector = linspace(-pi,pi,5000);
+
+figure
+subplot 211
+stem(nvector,fftshift(abs(DFTmatrix(x5))),'LineWidth',1.5 )
+title('Magnitud de DFTmatrix( coseno )',"FontSize",16);
+xlabel('Frecuencia Rad/muestra',"FontSize",16);ylabel('Amplitud',"FontSize",16);
+subplot 212
+stem(nvector,fftshift(abs(fft(x5))),'LineWidth',1.5 )
+title('Magnitud de fft( coseno )',"FontSize",16);
+xlabel('Frecuencia Rad/muestra',"FontSize",16);ylabel('Amplitud',"FontSize",16);
+error5=immse(DFTmatrix(x5),fft(x5))
+error5s=immse(DFTmatrix(x5),DFTsum(x5))
 
 %% V.3
 fs=5000;
 t=0:1/fs:1-1/fs;
-x1=cos(500*t);
+x1=cos(2*pi*100*t);
 f1 = @()DFTsum(x1);
 f2 = @()DFTmatrix(x1);
-t1 = timeit(f1);
-t2 = timeit(f2);
+t1_0 = timeit(f1);
+t2_0 = timeit(f2);
 %%
 fs=5000;
 t=0:1/fs:1-1/fs;
 t1=zeros([1,50]);
 t2=zeros([1,50]);
 t3=zeros([1,50]);
-x1=cos(500*t);
+x1=cos(2*pi*100*t);
 i=1;
 for N=100:100:5000
     f1 = @()DFTsum(x1(1:N));
