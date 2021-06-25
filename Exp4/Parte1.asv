@@ -455,15 +455,15 @@ xlabel('Muestras',"FontSize",16);ylabel('Tiempo s',"FontSize",16);
 subplot 222
 stem(nvector,t2,'LineWidth',1.5 )
 title('Tiempo DFTmatrix',"FontSize",16);
-xlabel('Muestras',"FontSize",16);ylabel('Tiempo s',"FontSize",16);
+xlabel('Frecuencia Rad/muestra',"FontSize",16);ylabel('Amplitud',"FontSize",16);
 subplot 223
 stem(nvector,t3,'LineWidth',1.5 )
 title('Tiempo fft',"FontSize",16);
-xlabel('Muestras',"FontSize",16);ylabel('Tiempo s',"FontSize",16);
+xlabel('Frecuencia Rad/muestra',"FontSize",16);ylabel('Amplitud',"FontSize",16);
 subplot 224
 stem(nvector,t4,'LineWidth',1.5 )
 title('Tiempo dftmtx',"FontSize",16);
-xlabel('Muestras',"FontSize",16);ylabel('Tiempo s',"FontSize",16);
+xlabel('Frecuencia Rad/muestra',"FontSize",16);ylabel('Amplitud',"FontSize",16);
 %%
 dftdc(x3)
 
