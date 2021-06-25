@@ -164,8 +164,8 @@ static void initGoertzel(goertzelState_t *state, uint64_t kFrequency)
   state->sinW = sin(omega);
   state->A1= -2*cos(omega);
   state->outputs[0] = 0.0;
-  state->outputs[0] = 0.0;
-  state->outputs[0] = 0.0;
+  state->outputs[1] = 0.0;
+  state->outputs[2] = 0.0;
   state->binReal=0;
   state->binImag=0;
   state->binMag=0;

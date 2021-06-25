@@ -300,24 +300,19 @@ xlabel('Frecuencia Rad/muestra',"FontSize",16);ylabel('Amplitud',"FontSize",16);
 %% 4.3
 fs=5000;
 t=0:1/fs:1-1/fs;
-nvector=linspace(0,fs,500);
 x1=cos(2*pi*100*t);
-dft_cos=DFTsum(x1(1:500));
-fft_cos=fft(x1(1:500));
-stem(nvector,(abs(dft_cos)-abs(fft_cos)).^2,'LineWidth',1.5 )
+dft_cos=DFTsum(x1);
+fft_cos=fft(x1);
+plot((abs(dft_cos)-abs(fft_cos)).^2,'LineWidth',1.5 )
 title('Error entre DFTsum(x1) y fft(x1)',"FontSize",16);
 xlabel('Frecuencia Hz',"FontSize",16);ylabel('Amplitud',"FontSize",16);
 error_c=immse(dft_cos,fft_cos)
 %% V
 fs=5000;
 t=0:1/fs:1-1/fs;
-x1=cos(2*pi*100*t);
+x1=cos(500*t);
 %X1=DFTmatrix(x1);
-%% V 1
-N = 2;
-B=dftmtx(N);
-A=genAmatrix(N);
-immse(A,B)
+
 
 %% V2
 Matriz8 = genAmatrix(8);
@@ -326,20 +321,12 @@ error8 = immse(Matriz8,dft8);
 Matriz64 = genAmatrix(64);
 subplot 221
 imagesc(real(Matriz8))
-title('Parte Real N=8 ',"FontSize",16);
-%xlabel('Frecuencia Rad/muestra',"FontSize",16);ylabel('Amplitud',"FontSize",16);
 subplot 222
 imagesc(imag(Matriz8))
-title('Parte Imaginaria N=8 ',"FontSize",16);
-%xlabel('Frecuencia Rad/muestra',"FontSize",16);ylabel('Amplitud',"FontSize",16);
 subplot 223
 imagesc(real(Matriz64))
-title('Parte Real N=65 ',"FontSize",16);
-%xlabel('Frecuencia Rad/muestra',"FontSize",16);ylabel('Amplitud',"FontSize",16);
 subplot 224
 imagesc(imag(Matriz64))
-title('Parte Imaginaria N=64',"FontSize",16);
-%xlabel('Frecuencia Rad/muestra',"FontSize",16);ylabel('Amplitud',"FontSize",16);
 
 %% V3
 x1 = [1 zeros([1,7])];
