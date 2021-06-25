@@ -444,6 +444,8 @@ for N=100:100:5000
     t3(i) = timeit(f3);
     i=i+1;
 end
+%%
+dftdc(x3)
 
 %% VI
 x1 = [1 zeros([1,7])];
@@ -475,6 +477,56 @@ stem(abs(dft4))
 subplot 428
 stem(abs(fft(x4)))
 
+f1 = @()dftdc(x1);
+t_dftdc = timeit(f1);
+
+%% VI 2
+x1 = [1 zeros([1,7])];
+x2 = ones([1,8]);
+x3 = zeros([1,8]);
+x4 = zeros([1,8]);
+k=0:7;
+x3(k+1)=exp(-j*2*pi*k/8);
+x4(k+1)=cos(2*pi*k/8);
+
+dft1 = FFT8(x1);
+dft2 = FFT8(x2);
+dft3 = FFT8(x3);
+dft4 = FFT8(x4);
+subplot 421
+stem(abs(dft1))
+subplot 422
+stem(abs(fft(x1)))
+subplot 423
+stem(abs(dft2))
+subplot 424
+stem(abs(fft(x2)))
+subplot 425
+stem(abs(dft3))
+subplot 426
+stem(abs(fft(x3)))
+subplot 427
+stem(abs(dft4))
+subplot 428
+stem(abs(fft(x4)))
+
+f1 = @()FFT8(x1);
+t_fft8 = timeit(f1);
+%% VI 3
+fs=5000;
+t=0:1/fs:3-1/fs;
+nvector=linspace(0,fs,256);
+x1=cos(2*pi*100*t);
+dft_cos=fft(x1(1:256));
+fft_cos=fft_stage(x1(1:256));
+subplot 211
+stem(nvector,(abs(dft_cos)));
+subplot 212
+stem(nvector,(abs(dft_cos)));
+f1 = @()fft_stage(x1(1:256));
+t_stage = timeit(f1);
+f1 = @()fft(x1(1:256));
+t_fft = timeit(f1);
 %% Funciones
 function X=DFTsum(x) 
 N = length(x);
@@ -519,9 +571,62 @@ x_impar=zeros([1,ceil(length(x))*0.5]);
 X_par=DFTsum(x_par);
 X_impar=DFTsum(x_impar);
 k=0:length(X_impar)-1;
-Wnk=exp(-j*2*pi*k/length(X_impar));
-length(X_par)
-length(X_impar)
-length(Wnk)
+Wnk=exp(-j*2*pi*k/length(x));
 X=[X_par+Wnk.*X_impar, X_par-Wnk.*X_impar];
+end
+
+function X = FFT8(x)
+Wn = exp(-1j*2*pi/8);
+X = zeros([1,8]);
+x0 = [x(1) x(3) x(5) x(7)];
+X0 = FFT4(x0);
+x1 = [x(2) x(4) x(6) x(8)];
+X1 = FFT4(x1);
+    for k=1:4
+        X(k) = X0(k)+Wn^(k-1)*X1(k);
+        X(k+4) = X0(k)-Wn^(k-1)*X1(k);
+    end
+end
+
+function X = FFT4(x)
+Wn = exp(-1j*2*pi/4);
+X = zeros([1,4]);
+x0 = [x(1) x(3)];
+X0 = FFT2(x0);
+x1 = [x(2) x(4)];
+X1 = FFT2(x1);
+    for k=1:2
+        X(k) = X0(k)+Wn^(k-1)*X1(k);
+        X(k+2) = X0(k)-Wn^(k-1)*X1(k);
+    end
+end
+
+function X = FFT2(x)
+X(1) = x(1)+x(2);
+X(2) = x(1)-x(2);
+end
+
+function X = fft_stage(x)
+if length(x) == 2
+    X =FFT2(x);
+else
+    x_par=zeros([1,ceil(length(x))*0.5]);
+    for n=1:length(x)
+        if mod(n,2)~=0
+            x_par((n+1)/2)=x(n);
+        end
+    end
+    x_impar=zeros([1,ceil(length(x))*0.5]);
+    for n=1:length(x)
+        if mod(n,2)==0
+            x_impar(n/2)=x(n);
+        end
+    end
+    X_par = fft_stage(x_par);
+    X_impar = fft_stage(x_impar);
+    
+    k=0:length(X_impar)-1;
+    Wnk=exp(-j*2*pi*k/length(x));
+    X=[X_par+Wnk.*X_impar, X_par-Wnk.*X_impar];
+end
 end

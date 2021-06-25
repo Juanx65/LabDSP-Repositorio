@@ -31,13 +31,13 @@
  * Bins arbitrarios.
  */
 
-#define GOERTZEL1_K_BIN	    	(9)
-#define GOERTZEL2_K_BIN	    	(9)
-#define GOERTZEL3_K_BIN	    	(9)
-#define GOERTZEL4_K_BIN	    	(9)
-#define GOERTZEL5_K_BIN	    	(9)
-#define GOERTZEL6_K_BIN	    	(9)
-#define GOERTZEL7_K_BIN	    	(9)
+#define GOERTZEL1_K_BIN	    	(11)
+#define GOERTZEL2_K_BIN	    	(12)
+#define GOERTZEL3_K_BIN	    	(14)
+#define GOERTZEL4_K_BIN	    	(15)
+#define GOERTZEL5_K_BIN	    	(19)
+#define GOERTZEL6_K_BIN	    	(21)
+#define GOERTZEL7_K_BIN	    	(24)
 
 /*
  * bins para DTMF con N=256 @16 ksps
@@ -160,7 +160,7 @@ static void initGoertzel(goertzelState_t *state, uint64_t kFrequency)
 {
   double omega = (2*M_PI*kFrequency/GOERTZEL_N);
   state->samplesCounter = 0;
-	state->cosW = cos(omega);
+  state->cosW = cos(omega);
   state->sinW = sin(omega);
   state->A1= -2*cos(omega);
   state->outputs[0] = 0.0;
@@ -181,7 +181,7 @@ static void initGoertzel(goertzelState_t *state, uint64_t kFrequency)
 static void resetGoertzel(goertzelState_t *state)
 {
 	state->samplesCounter = 0;
-  state->outputs[0] 		= 0.0;
+    state->outputs[0] 		= 0.0;
 	state->outputs[1] 		= 0.0;
 	state->outputs[2] 		= 0.0;
 	// Se quere retener el �ltimo resultado para el bin sin llevarlos a cero
@@ -205,10 +205,10 @@ static double computeGoertzel(goertzelState_t *state, double filterInput)
 	// Existe la funci�n sqrt() provista por el <math.h>
 state->outputs[2]=state->outputs[1];
 state->outputs[1]=state->outputs[0];
-state->outputs[0]=filterInput-(state->A1*state->outputs[1])-(state->outputs[2]);
-state->samplesCounter=state->samplesCounter+1;
+state->outputs[0]=filterInput+(2*state->cosW*state->outputs[1])-(state->outputs[2]);
+(state->samplesCounter)+=1;
 
-if(state->samplesCounter==GOERTZEL_N)
+if(state->samplesCounter==GOERTZEL_N+1)
 {
   state->binReal=state->cosW*state->outputs[1]-state->outputs[2];
   state->binImag=state->sinW*state->outputs[1];
@@ -216,7 +216,7 @@ if(state->samplesCounter==GOERTZEL_N)
   //state->binMag=state->outputs[0];
   resetGoertzel(state);
 }
-return state->outputs[0];
+return state->binMag;
 }
 
 /******************************************************************************
