@@ -119,7 +119,6 @@ void goertzelFunction(double input1,
 				double *output7
 				)
 {
-    // Bypass
   *output1 = computeGoertzel(&gGoertzelState1 , input1);
   *output2 = computeGoertzel(&gGoertzelState2 , input1);
   *output3 = computeGoertzel(&gGoertzelState3 , input1);
@@ -199,10 +198,6 @@ static void resetGoertzel(goertzelState_t *state)
 ******************************************************************************/
 static double computeGoertzel(goertzelState_t *state, double filterInput)
 {
-	// TO-DO
-	// Completar todo el algoritmo de Goertzel  usando la estructura de estado,
-	// filterInput y GOERTZEL_N
-	// Existe la funci�n sqrt() provista por el <math.h>
 state->outputs[2]=state->outputs[1];
 state->outputs[1]=state->outputs[0];
 state->outputs[0]=filterInput+(2*state->cosW*state->outputs[1])-(state->outputs[2]);
@@ -213,7 +208,6 @@ if(state->samplesCounter==GOERTZEL_N+1)
   state->binReal=state->cosW*state->outputs[1]-state->outputs[2];
   state->binImag=state->sinW*state->outputs[1];
   state->binMag=sqrt(state->binReal*state->binReal+state->binImag*state->binImag);
-  //state->binMag=state->outputs[0];
   resetGoertzel(state);
 }
 return state->binMag;

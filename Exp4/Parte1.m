@@ -249,7 +249,7 @@ x1 = [1 zeros([1,7])];
 x2 = ones([1,8]);
 x3 = zeros([1,8]);
 x4 = zeros([1,8]);
-w_vector = linspace(-pi,pi,length(x1));
+w_vector = linspace(-pi,pi-2*pi/length(x1),length(x1));
 k=0:7;
 x3(k+1)=exp(-j*2*pi*k/8);
 x4(k+1)=cos(2*pi*k/8);
@@ -481,24 +481,42 @@ dft2 = dftdc(x2);
 dft3 = dftdc(x3);
 dft4 = dftdc(x4);
 subplot 421
-stem(abs(dft1))
+stem(abs(dft1),'LineWidth',1.5 )
+title('Magnitud de dftdc( \delta [n] )',"FontSize",16);
+xlabel('Frecuencia bins',"FontSize",16);ylabel('Amplitud',"FontSize",16);
 subplot 422
-stem(abs(fft(x1)))
+stem(fft(x1),'LineWidth',1.5 )
+title('Magnitud de fft( \delta [n] )',"FontSize",16);
+xlabel('Frecuencia bins',"FontSize",16);ylabel('Amplitud',"FontSize",16);
 subplot 423
-stem(abs(dft2))
+stem((abs(dft2)),'LineWidth',1.5 )
+title('Magnitud de dftdc( 1 )',"FontSize",16);
+xlabel('Frecuencia bins',"FontSize",16);ylabel('Amplitud',"FontSize",16);
 subplot 424
-stem(abs(fft(x2)))
+stem((abs(fft(x2))),'LineWidth',1.5 )
+title('Magnitud de fft( 1 )',"FontSize",16);
+xlabel('Frecuencia bins',"FontSize",16);ylabel('Amplitud',"FontSize",16);
 subplot 425
-stem(abs(dft3))
+stem(abs(dft3),'LineWidth',1.5 )
+title('Magnitud de dftdc( exponencial )',"FontSize",16);
+xlabel('Frecuencia bins',"FontSize",16);ylabel('Amplitud',"FontSize",16);
 subplot 426
-stem(abs(fft(x3)))
+stem(abs(fft(x3)),'LineWidth',1.5 )
+title('Magnitud de fft( exponencial )',"FontSize",16);
+xlabel('Frecuencia bins',"FontSize",16);ylabel('Amplitud',"FontSize",16);
 subplot 427
-stem(abs(dft4))
+stem(abs(dft4),'LineWidth',1.5 )
+title('Magnitud de dftdc( coseno )',"FontSize",16);
+xlabel('Frecuencia bins',"FontSize",16);ylabel('Amplitud',"FontSize",16);
 subplot 428
-stem(abs(fft(x4)))
+stem(abs(fft(x4)),'LineWidth',1.5 )
+title('Magnitud de fft( coseno )',"FontSize",16);
+xlabel('Frecuencia bins',"FontSize",16);ylabel('Amplitud',"FontSize",16);
 
-f1 = @()dftdc(x1);
+f1 = @()dftdc(x4);
 t_dftdc = timeit(f1);
+f2 = @()fft(x4);
+t_fft = timeit(f2);
 
 %% VI 2
 x1 = [1 zeros([1,7])];
@@ -514,21 +532,37 @@ dft2 = FFT8(x2);
 dft3 = FFT8(x3);
 dft4 = FFT8(x4);
 subplot 421
-stem(abs(dft1))
+stem(abs(dft1),'LineWidth',1.5 )
+title('Magnitud de FFT8( \delta [n] )',"FontSize",16);
+xlabel('Frecuencia bins',"FontSize",16);ylabel('Amplitud',"FontSize",16);
 subplot 422
-stem(abs(fft(x1)))
+stem(fft(x1),'LineWidth',1.5 )
+title('Magnitud de fft( \delta [n] )',"FontSize",16);
+xlabel('Frecuencia bins',"FontSize",16);ylabel('Amplitud',"FontSize",16);
 subplot 423
-stem(abs(dft2))
+stem((abs(dft2)),'LineWidth',1.5 )
+title('Magnitud de FFT8( 1 )',"FontSize",16);
+xlabel('Frecuencia bins',"FontSize",16);ylabel('Amplitud',"FontSize",16);
 subplot 424
-stem(abs(fft(x2)))
+stem((abs(fft(x2))),'LineWidth',1.5 )
+title('Magnitud de fft( 1 )',"FontSize",16);
+xlabel('Frecuencia bins',"FontSize",16);ylabel('Amplitud',"FontSize",16);
 subplot 425
-stem(abs(dft3))
+stem(abs(dft3),'LineWidth',1.5 )
+title('Magnitud de FFT8( exponencial )',"FontSize",16);
+xlabel('Frecuencia bins',"FontSize",16);ylabel('Amplitud',"FontSize",16);
 subplot 426
-stem(abs(fft(x3)))
+stem(abs(fft(x3)),'LineWidth',1.5 )
+title('Magnitud de fft( exponencial )',"FontSize",16);
+xlabel('Frecuencia bins',"FontSize",16);ylabel('Amplitud',"FontSize",16);
 subplot 427
-stem(abs(dft4))
+stem(abs(dft4),'LineWidth',1.5 )
+title('Magnitud de FFT8( coseno )',"FontSize",16);
+xlabel('Frecuencia bins',"FontSize",16);ylabel('Amplitud',"FontSize",16);
 subplot 428
-stem(abs(fft(x4)))
+stem(abs(fft(x4)),'LineWidth',1.5 )
+title('Magnitud de fft( coseno )',"FontSize",16);
+xlabel('Frecuencia bins',"FontSize",16);ylabel('Amplitud',"FontSize",16);
 
 f1 = @()FFT8(x1);
 t_fft8 = timeit(f1);
@@ -537,12 +571,16 @@ fs=5000;
 t=0:1/fs:3-1/fs;
 nvector=linspace(0,fs,256);
 x1=cos(2*pi*100*t);
-dft_cos=fft(x1(1:256));
-fft_cos=fft_stage(x1(1:256));
+fft_cos=fft(x1(1:256));
+dft_cos=fft_stage(x1(1:256));
 subplot 211
-stem(nvector,(abs(dft_cos)));
+stem(nvector,(abs(dft_cos)),'LineWidth',1.5 );
+title('Magnitud de la señal usando fft_stage',"FontSize",16);
+xlabel('frecuencia Hz',"FontSize",16);ylabel('Amplitud',"FontSize",16);
 subplot 212
-stem(nvector,(abs(dft_cos)));
+stem(nvector,(abs(fft_cos)),'LineWidth',1.5 );
+title('Magnitud de la señal usando fft de MATLAB',"FontSize",16);
+xlabel('frecuencia Hz',"FontSize",16);ylabel('Amplitud',"FontSize",16);
 f1 = @()fft_stage(x1(1:256));
 t_stage = timeit(f1);
 f1 = @()fft(x1(1:256));
@@ -556,7 +594,6 @@ for k=1:length(x)
         X(k)=X(k)+x(n)*exp(-j*2*pi*(k-1)*(n-1)/N);
     end
 end
-
 end
 
 function X=DFTmatrix(x)
