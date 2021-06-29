@@ -166,37 +166,24 @@ plot(x2(7):length(training_signal),training_signal(x2(7):length(training_signal)
 
 %% 2
 silencio1 = training_signal(1:2000);
-scatter(rms(silencio1),cruces_cero(silencio1));
-hold on
 s = training_signal(2001:3100);
-scatter(rms(s),cruces_cero(s));
 e = training_signal(3101:3750);
-scatter(rms(e),cruces_cero(e));
-n = training_signal(3751:4600);
-scatter(rms(n),cruces_cero(n));
-a = training_signal(4601:5350);
-scatter(rms(a),cruces_cero(a));
-l = training_signal(5351:6000);
-scatter(rms(l),cruces_cero(l));
-e2 = training_signal(6001:6900);
-scatter(rms(e2),cruces_cero(e2));
-s2 = training_signal(6901:8200);
-scatter(rms(s2),cruces_cero(s2));
-silencio2 = training_signal(8201:8500);
-scatter(rms(silencio2),cruces_cero(silencio2));
-t = training_signal(8501:8700);
-scatter(rms(t),cruces_cero(t));
-e3 = training_signal(8701:9300);
-scatter(rms(e3),cruces_cero(e3));
-m = training_signal(9301:10000);
-p = training_signal(10001:10400);
-o = training_signal(10401:10700);
-r = training_signal(10701:11700);
-a2 = training_signal(11701:12050);
-l2 = training_signal(12051:12550);
-e4 = training_signal(12551:13350);
-s3 = training_signal(13351:15500);
-silencio3 = training_signal(15501:15920);
+n = training_signal(1:2000);
+a = training_signal(1:2000);
+l = training_signal(1:2000);
+e2 = training_signal(1:2000);
+s2 = training_signal(1:2000);
+silencio2 = training_signal(1:2000);
+t = training_signal(1:2000);
+e3 = training_signal(1:2000);
+m = training_signal(1:2000);
+p = training_signal(1:2000);
+o = training_signal(1:2000);
+r = training_signal(1:2000);
+a2 = training_signal(1:2000);
+l2 = training_signal(1:2000);
+e4 = training_signal(1:2000);
+s3 = training_signal(1:2000);
 %% Funciones
 
 function X = exciteV (N, Np)
