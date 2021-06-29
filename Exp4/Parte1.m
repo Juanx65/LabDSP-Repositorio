@@ -1,4 +1,4 @@
-%% I.2
+        %% I.2
 fs = 5000;
 t=0:1/fs:0.1-1/fs;
 s1 = cos(2*pi*100*t);
@@ -567,6 +567,7 @@ xlabel('Frecuencia bins',"FontSize",16);ylabel('Amplitud',"FontSize",16);
 f1 = @()FFT8(x1);
 t_fft8 = timeit(f1);
 %% VI 3
+
 fs=5000;
 t=0:1/fs:3-1/fs;
 nvector=linspace(0,fs,256);
@@ -581,10 +582,37 @@ subplot 212
 stem(nvector,(abs(fft_cos)),'LineWidth',1.5 );
 title('Magnitud de la señal usando fft de MATLAB',"FontSize",16);
 xlabel('frecuencia Hz',"FontSize",16);ylabel('Amplitud',"FontSize",16);
+
+
 f1 = @()fft_stage(x1(1:256));
 t_stage = timeit(f1);
 f1 = @()fft(x1(1:256));
 t_fft = timeit(f1);
+%% VI Tiempos
+fs=5000;
+t=linspace(0,3-1/fs,2^19);
+x1=cos(2*pi*100*t);
+i=1;
+for k=10:19
+    N = 2^k;
+    f1 = @()fft_stage(x1(1:N));
+    f2 = @()fft(x1(1:N));
+    t1(i) = timeit(f1);
+    t2(i) = timeit(f2);
+    i=i+1;
+end
+%% VI 3 tiempos grafica
+nvector = linspace(2^10,2^19);
+nv = 1:1:length(t1);
+subplot 211
+stem(nv,t1,'LineWidth',1.5 )
+title('Tiempo fft\_stage',"FontSize",16);
+xlabel('Muestra N',"FontSize",16);ylabel('Tiempo s',"FontSize",16);
+subplot 212
+stem(nv,t2,'LineWidth',1.5 )
+title('Tiempo fft',"FontSize",16);
+xlabel('Muestra N',"FontSize",16);ylabel('Tiempo s',"FontSize",16);
+
 %% Funciones
 function X=DFTsum(x) 
 N = length(x);
