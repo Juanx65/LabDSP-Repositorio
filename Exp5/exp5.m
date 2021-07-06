@@ -165,38 +165,94 @@ plot(x2(5):x2(6),training_signal(x2(5):x2(6)),'color','green');
 plot(x2(7):length(training_signal),training_signal(x2(7):length(training_signal)),'color','green');
 
 %% 2
-silencio1 = training_signal(1:2000);
-scatter(rms(silencio1),cruces_cero(silencio1));
+load('test_training_signals.mat');
+silencio1 = training_signal(1:1500);
+scatter(rms(silencio1),cruces_cero(silencio1),'blue');
 hold on
-s = training_signal(2001:3100);
-scatter(rms(s),cruces_cero(s));
+s = training_signal(1501:3100);
+scatter(rms(s),cruces_cero(s),'green');
 e = training_signal(3101:3750);
-scatter(rms(e),cruces_cero(e));
-n = training_signal(3751:4600);
-scatter(rms(n),cruces_cero(n));
-a = training_signal(4601:5350);
-scatter(rms(a),cruces_cero(a));
+scatter(rms(e),cruces_cero(e),'red');
+n = training_signal(3751:4750);
+scatter(rms(n),cruces_cero(n),'red');
+a = training_signal(4751:5350);
+scatter(rms(a),cruces_cero(a),'red');
 l = training_signal(5351:6000);
-scatter(rms(l),cruces_cero(l));
+scatter(rms(l),cruces_cero(l),'red');
 e2 = training_signal(6001:6900);
-scatter(rms(e2),cruces_cero(e2));
+scatter(rms(e2),cruces_cero(e2),'red');
 s2 = training_signal(6901:8200);
-scatter(rms(s2),cruces_cero(s2));
+scatter(rms(s2),cruces_cero(s2),'green');
 silencio2 = training_signal(8201:8500);
-scatter(rms(silencio2),cruces_cero(silencio2));
+scatter(rms(silencio2),cruces_cero(silencio2),'blue');
 t = training_signal(8501:8700);
-scatter(rms(t),cruces_cero(t));
+scatter(rms(t),cruces_cero(t),'green');
 e3 = training_signal(8701:9300);
-scatter(rms(e3),cruces_cero(e3));
+scatter(rms(e3),cruces_cero(e3),'red');
 m = training_signal(9301:10000);
-p = training_signal(10001:10400);
-o = training_signal(10401:10700);
+scatter(rms(m),cruces_cero(m),'red');
+p = training_signal(10001:10250);
+scatter(rms(p),cruces_cero(p),'green');
+o = training_signal(10251:10700);
+scatter(rms(o),cruces_cero(o),'red');
 r = training_signal(10701:11700);
+scatter(rms(r),cruces_cero(e3),'red');
 a2 = training_signal(11701:12050);
+scatter(rms(a2),cruces_cero(a2),'red');
 l2 = training_signal(12051:12550);
+scatter(rms(l2),cruces_cero(l2),'red');
 e4 = training_signal(12551:13350);
+scatter(rms(e4),cruces_cero(e4),'red');
 s3 = training_signal(13351:15500);
+scatter(rms(s3),cruces_cero(s3),'green');
 silencio3 = training_signal(15501:15920);
+scatter(rms(silencio3),cruces_cero(silencio3),'blue');
+xlabel('RMS de la señal');
+ylabel('Cruces de cero por milisegundo')
+
+%% 3 
+load('test_training_signals.mat');
+%plot(test_signal);
+VUS = zeros([length(test_signal),1]);
+for i=1:0.02*fs:length(test_signal)
+    frame = test_signal(i:i+min(0.02*fs-1,length(test_signal)-i));
+    VUS(i:i+min(0.02*fs-1,length(test_signal)-i)) = find_VUS(frame);
+end
+plot(test_signal);
+hold on
+plot(VUS)
+
+%% 3.2
+VUS_vector = zeros([1,ceil(length(test_signal)/(0.02*fs))]);
+RMS_vector = zeros([1,ceil(length(test_signal)/(0.02*fs))]);
+lpc_matrix = zeros([16,ceil(length(test_signal)/(0.02*fs))]);
+
+for i=1:100
+    i2 = 0.02*fs*(i-1)+1;
+    frame = test_signal(i2:i2+min(0.02*fs-1,length(test_signal)-i2));
+    VUS_vector(i)=find_VUS(frame);
+    RMS_vector(i)=rms(frame);
+    lpc_matrix(:,i) = mylpc(frame,15);
+end
+
+%Crear senal sintetizada
+senal_sintetizada = zeros([1,length(test_signal)]);
+for j=1:100
+    j2 = 0.02*fs*(j-1)+1;
+    if VUS_vector(j)==0
+        senal_sintetizada(j2:j2+min(0.02*fs-1,length(test_signal)-j2-1)) = zeros(1,min(0.02*fs,length(test_signal)-j2));
+    else
+        if VUS_vector(j)==1
+            X = exciteV(min(0.02*fs,length(test_signal)-j2),80);
+            rmsfactor = RMS_vector(i)/rms(filter(1,lpc_matrix(:,j),X));
+            senal_sintetizada(j2:j2+min(0.02*fs-1,length(test_signal)-j2-1)) = filter(1,lpc_matrix(:,j),X)*rmsfactor;
+        else
+            X = rand([1,min(0.02*fs,length(test_signal)-j2)]);
+            rmsfactor = RMS_vector(i)/rms(filter(1,lpc_matrix(:,j),X));
+            senal_sintetizada(j2:j2+min(0.02*fs-1,length(test_signal)-j2-1)) = filter(1,lpc_matrix(:,j),X)*rmsfactor;
+        end
+    end
+end
 %% Funciones
 
 function X = exciteV (N, Np)
@@ -215,15 +271,33 @@ function X = exciteV (N, Np)
  rx1 = rx(ceil(0.5*largo_rx)+1:ceil(0.5*largo_rx)+p);
  rx2 = rx(ceil(0.5*largo_rx):ceil(0.5*largo_rx)+p-1);
  Rx = toeplitz(rx2);
- a = Rx^(-1)*rx1;
- a = [1; -a];
+ if  det(Rx) == 0
+     a = zeros([1,16]);
+ else
+    a = Rx^(-1)*rx1;
+    a = [1; -a];
+ end
  end
 
  function y = cruces_cero(x)
+ largo_senal = length(x)/8000*1000;
  y=0;
   for i=2:length(x)
     if (x(i)*x(i-1))<0
       y=y+1;
     end
   end
+  y=y/largo_senal;
+ end
+
+ function y = find_VUS(x)
+    if(rms(x)<0.013)
+        y = 0;
+    else
+        if(cruces_cero(x)>2.4 && rms(x)<0.06)
+            y = -1;
+        else
+            y = 1;
+        end
+    end
  end
