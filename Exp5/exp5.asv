@@ -8,7 +8,7 @@ Y = fft(X);
 w = linspace(0,fs/2,N/2);
 %plot(w,abs(Y(1:N/2)));
 figure
-plot(w,20*log10(abs(Y(1:N/2)+10^(-30)))); % porque el +10^-30 ??????
+plot(w,mag2db(abs(Y(1:N/2)+10^-30  ))); % 10^-30 porque sino no grafica.
 title('Magnitud del espectro');xlabel('Frecuencia sps');ylabel('Amplitud dB');
 
 %% 1.2
@@ -59,23 +59,47 @@ end
 
 plot(w(1:N/2),abs(U(1:N/2)));
 legend("a","e","i","o","u");
-title('Magnitud del filtro');xlabel('Frecuencia sps');ylab
+title('Magnitud del filtro');xlabel('Frecuencia sps');ylabel('Amplitud');
 
 %% 1.3
 fs=8000;
 N=fs;
 Np=80;
+w = linspace(0,fs,N);
+
 X = exciteV(N,Np);
 a = lpc(vowel_a,15);
 a_sint = filter(1,a,X);
+A_sint = fft(a_sint);
+subplot 511
+plot(w(1:N/2),20*log10(abs(A_sint(1:N/2))));
+title('Magnitud del vocal a');xlabel('Frecuencia sps');ylabel('Amplitud');
 e = lpc(vowel_e,15);
 e_sint = filter(1,e,X);
+E_sint = fft(e_sint);
+subplot 512
+plot(w(1:N/2),20*log10(abs(E_sint(1:N/2))));
+title('Magnitud del vocal e');xlabel('Frecuencia sps');ylabel('Amplitud');
 i = lpc(vowel_i,15);
 i_sint = filter(1,i,X);
+I_sint = fft(i_sint);
+subplot 513
+plot(w(1:N/2),20*log10(abs(I_sint(1:N/2))));
+title('Magnitud del vocal i');xlabel('Frecuencia sps');ylabel('Amplitud');
 o = lpc(vowel_o,15);
 o_sint = filter(1,o,X);
+O_sint = fft(o_sint);
+subplot 514
+plot(w(1:N/2),20*log10(abs(O_sint(1:N/2))));
+title('Magnitud del vocal o');xlabel('Frecuencia sps');ylabel('Amplitud');
 u = lpc(vowel_u,15);
 u_sint = filter(1,u,X);
+U_sint = fft(u_sint);
+subplot  515
+plot(w(1:N/2),20*log10(abs(U_sint(1:N/2))));
+title('Magnitud del vocal u');xlabel('Frecuencia sps');ylabel('Amplitud');
+
+
 
 %% 1.4
 
@@ -129,6 +153,7 @@ end
 
 plot(w(1:N/2),abs(U(1:N/2)));
 legend("a","e","i","o","u");
+title('Magnitud del filtro');xlabel('Frecuencia sps');ylabel('Amplitud');
 
 %% 1.4 generar archivos de audio
 fs=8000;
@@ -145,12 +170,14 @@ o = mylpc(vowel_o,15);
 o_sint = filter(1,o,X);
 u = mylpc(vowel_u,15);
 u_sint = filter(1,u,X);
+plot(w(1:N/2),20*log10(abs(U_sint(1:N/2))));
+title('Magnitud del vocal u');xlabel('Frecuencia sps');ylabel('Amplitud');
 
-audiowrite("mylpc_vowel_a.wav",a_sint,fs);
-audiowrite("mylpc_vowel_e.wav",e_sint,fs);
-audiowrite("mylpc_vowel_i.wav",i_sint,fs);
-audiowrite("mylpc_vowel_o.wav",o_sint,fs);
-audiowrite("mylpc_vowel_u.wav",u_sint,fs);
+%audiowrite("mylpc_vowel_a.wav",a_sint,fs);
+%audiowrite("mylpc_vowel_e.wav",e_sint,fs);
+%audiowrite("mylpc_vowel_i.wav",i_sint,fs);
+%audiowrite("mylpc_vowel_o.wav",o_sint,fs);
+%audiowrite("mylpc_vowel_u.wav",u_sint,fs);
 
 %% 2
 load('test_training_signals.mat');
