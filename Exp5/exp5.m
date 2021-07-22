@@ -7,8 +7,14 @@ t = 0:1/fs:1-1/fs;
 Y = fft(X);
 w = linspace(0,fs/2,N/2);
 plot(w,abs(Y(1:N/2)));
+title('Magnitud del Espectro');
+xlabel('Frecuencia sps');
+ylabel('Amplitud')
 figure
 plot(w,20*log10(abs(Y(1:N/2)+10^(-30))));
+title('Amplitud del Espectro en dB');
+xlabel('Frecuencia sps');
+ylabel('Amplitud dB')
 
 %% 1.2
 load('vowels.mat');
@@ -74,6 +80,7 @@ o = lpc(vowel_o,15);
 o_sint = filter(1,o,X);
 u = lpc(vowel_u,15);
 u_sint = filter(1,u,X);
+plot(a_sint)
 
 %% 1.4
 

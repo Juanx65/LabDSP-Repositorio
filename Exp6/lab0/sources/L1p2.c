@@ -13,6 +13,7 @@
 #include "L138_LCDK_aic3106_init.h"
 #include "dsp_lab_utils.h"
 #include <math.h>
+#include <mathlib.h>
 #include "dlu_codec_config.h"
 #include "oscilloscope_meas.h"
 
@@ -139,7 +140,7 @@ interrupt void interrupt4(void) // interrupt service routine
         // Theta entre [0, 2*pi]
         if ( thetaCosineSignal > 2.0 * M_PI ) thetaCosineSignal = thetaCosineSignal - 2.0*M_PI;
         // Calculo de sin(Theta) y cos(Theta)
-        cosSignal = (int16_t)( 2 * ampCosine * cosf(thetaCosineSignal) );
+        cosSignal = (int16_t)( 2 * ampCosine * cossp(thetaCosineSignal) );
 
         /*-------------------------------------------------------------------*/
         /* MODULACIÓN DE AMPLITUD */
