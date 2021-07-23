@@ -309,6 +309,18 @@ for j=1:100
         end
     end
 end
+load('test_training_signals.mat');
+N=fs;
+w1 = linspace(0,fs,length(test_signal));
+w2 = linspace(0,fs,length(senal_sintetizada));
+figure
+plot(w1,test_signal);
+hold on
+plot(w2,senal_sintetizada,'LineWidth',1.5);
+title('Señal original vs Señal Sintetizada');xlabel('Frecuencia Rad/muestra');ylabel('Amplitud');
+legend({'señal original','senal sintetizada'},'Location','southwest');
+%audiowrite('my_test_signal.wav',senal_sintetizada,fs);
+%audiowrite('senal_original.wav',test_signal,fs);
 %% Funciones
 
 function X = exciteV (N, Np)
