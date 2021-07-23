@@ -273,8 +273,11 @@ for i=1:0.02*fs:length(test_signal)
 end
 plot(test_signal);
 hold on
-stairs(VUS)
-
+stairs(VUS);
+xlabel('Muestras');
+ylabel('Amplitud');
+title('Variable VUS junto a señal de prueba');
+legend('Senal de Prueba','Variable VUS');
 %% 3.1
 VUS_vector = zeros([1,ceil(length(test_signal)/(0.02*fs))]);
 RMS_vector = zeros([1,ceil(length(test_signal)/(0.02*fs))]);
@@ -297,11 +300,11 @@ for j=1:100
     else
         if VUS_vector(j)==1
             X = exciteV(min(0.02*fs,length(test_signal)-j2),80);
-            rmsfactor = RMS_vector(i)/rms(filter(1,lpc_matrix(:,j),X));
+            rmsfactor = RMS_vector(j)/rms(filter(1,lpc_matrix(:,j),X));
             senal_sintetizada(j2:j2+min(0.02*fs-1,length(test_signal)-j2-1)) = filter(1,lpc_matrix(:,j),X)*rmsfactor;
         else
             X = rand([1,min(0.02*fs,length(test_signal)-j2)]);
-            rmsfactor = RMS_vector(i)/rms(filter(1,lpc_matrix(:,j),X));
+            rmsfactor = RMS_vector(j)/rms(filter(1,lpc_matrix(:,j),X));
             senal_sintetizada(j2:j2+min(0.02*fs-1,length(test_signal)-j2-1)) = filter(1,lpc_matrix(:,j),X)*rmsfactor;
         end
     end
