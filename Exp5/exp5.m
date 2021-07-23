@@ -297,11 +297,11 @@ for j=1:100
     else
         if VUS_vector(j)==1
             X = exciteV(min(0.02*fs,length(test_signal)-j2),80);
-            rmsfactor = RMS_vector(i)/rms(filter(1,lpc_matrix(:,j),X));
+            rmsfactor = RMS_vector(j)/rms(filter(1,lpc_matrix(:,j),X));
             senal_sintetizada(j2:j2+min(0.02*fs-1,length(test_signal)-j2-1)) = filter(1,lpc_matrix(:,j),X)*rmsfactor;
         else
             X = rand([1,min(0.02*fs,length(test_signal)-j2)]);
-            rmsfactor = RMS_vector(i)/rms(filter(1,lpc_matrix(:,j),X));
+            rmsfactor = RMS_vector(j)/rms(filter(1,lpc_matrix(:,j),X));
             senal_sintetizada(j2:j2+min(0.02*fs-1,length(test_signal)-j2-1)) = filter(1,lpc_matrix(:,j),X)*rmsfactor;
         end
     end
@@ -314,6 +314,7 @@ figure
 plot(w1,test_signal);
 hold on
 plot(w2,senal_sintetizada,'LineWidth',1.5);
+title('Señal original vs Señal Sintetizada');xlabel('Frecuencia Rad/muestra');ylabel('Amplitud');
 legend({'señal original','senal sintetizada'},'Location','southwest');
 %audiowrite('my_test_signal.wav',senal_sintetizada,fs);
 %audiowrite('senal_original.wav',test_signal,fs);
