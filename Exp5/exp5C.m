@@ -126,7 +126,7 @@ title('zplane filtro vocal u orden 15');
 subplot 122
 zplane(1,lpc2);
 title('zplane filtro vocal u orden 11');
-%% IV 3 2
+%% IV 4
 load('vowels.mat');
 chosen_vowel = vowel_a;
 p1=15;
@@ -144,15 +144,17 @@ bqds = tf2sos(1,lpc1);
 
 w = linspace(0,pi,8001);
 
-plot(w, mag2db(positiveSpectrum(chosen_vowel)))
+plot(w, mag2db(positiveSpectrum(chosen_vowel)),'color','y')
 hold on
-plot(w, mag2db(abs(bq1)),'linewidth',2,'color','g')
-plot(w, mag2db(abs(bq2)),'linewidth',2,'color','g')
-plot(w, mag2db(abs(bq3)),'linewidth',2,'color','g')
-plot(w, mag2db(abs(bq4)),'linewidth',2,'color','g')
-plot(w, mag2db(abs(bq5)),'linewidth',2,'color','g')
-plot(w, mag2db(abs(bq6)),'linewidth',2,'color','g')
-plot(w, mag2db(abs(bq7)),'linewidth',2,'color','g')
+plot(w, mag2db(abs(bq1)),'linewidth',2)%,'color','g')
+plot(w, mag2db(abs(bq2)),'linewidth',2)%,'color','g')
+plot(w, mag2db(abs(bq3)),'linewidth',2)%,'color','g')
+plot(w, mag2db(abs(bq4)),'linewidth',2)%)%,'color','g')
+plot(w, mag2db(abs(bq5)),'linewidth',2)%,'color','g')
+plot(w, mag2db(abs(bq6)),'linewidth',2)%,'color','g')
+plot(w, mag2db(abs(bq7)),'linewidth',2)%,'color','g')
+title('Magnitud Filtro Bq vs Vocal a');ylabel('Amplitud dB');xlabel('Frecuencia Rad/muestra');
+legend('bq 2','bq 3','bq 4','bq 5','bq 6','bq 7','bq 8');
 
 %% V 1
 load('vowels.mat');

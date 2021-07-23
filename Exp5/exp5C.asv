@@ -62,7 +62,7 @@ subplot 224
 zplane(1,u2)
 title('zplane filtro vocal u orden 2');
 
-%% IV 3 
+%% IV 3 a
 load('vowels.mat');
 chosen_vowel = vowel_a;
 p1=15;
@@ -85,7 +85,7 @@ hold on
 plot(w2, mag2db(abs(fft(vowel_sint_1))))
 plot(w2, mag2db(abs(fft(vowel_sint_2))))
 title('Magnitud del espectro vocal a sintetizada');xlabel('Frecuencia Rad/muestra');ylabel('amplitud dB');
-legend('vocal a','Vocal sintetizada ord','')
+legend('vocal a','Vocal sintetizada filtro orden 15','Vocal sintetizada filtro orden 9')
 
 figure
 subplot 121
@@ -94,7 +94,38 @@ title('zplane filtro vocal a orden 15');
 subplot 122
 zplane(1,lpc2);
 title('zplane filtro vocal a orden 9');
+%% IV 3 u
+load('vowels.mat');
+chosen_vowel = vowel_u;
+p1=15;
+p2=11;
+X = exciteV(fs*0.5,fs/100);
 
+lpc1=lpc(chosen_vowel,p1);
+lpc2=lpc(chosen_vowel,p2);
+
+vowel_sint_1 = filter(1,lpc1,X);
+vowel_sint_2 = filter(1,lpc2,X);
+w1 = linspace(-pi,pi,length(chosen_vowel));
+w2 = linspace(-pi,pi,length(X));
+soundsc(vowel_sint_1,fs)
+pause(1)
+soundsc(vowel_sint_2,fs)
+figure
+plot(w1, mag2db(abs(fft(chosen_vowel))))
+hold on
+plot(w2, mag2db(abs(fft(vowel_sint_1))))
+plot(w2, mag2db(abs(fft(vowel_sint_2))))
+title('Magnitud del espectro vocal u sintetizada');xlabel('Frecuencia Rad/muestra');ylabel('amplitud dB');
+legend('vocal u','Vocal sintetizada filtro orden 15','Vocal sintetizada filtro orden 9')
+
+figure
+subplot 121
+zplane(1,lpc1);
+title('zplane filtro vocal u orden 15');
+subplot 122
+zplane(1,lpc2);
+title('zplane filtro vocal u orden 11');
 %% IV 3 2
 load('vowels.mat');
 chosen_vowel = vowel_a;
@@ -115,13 +146,14 @@ w = linspace(0,pi,8001);
 
 plot(w, mag2db(positiveSpectrum(chosen_vowel)))
 hold on
-plot(w, mag2db(abs(bq1)),'linewidth',2,'color','g')
+plot(w, mag2db(abs(bq1)),'linewidth',2)%,'color','g')
 plot(w, mag2db(abs(bq2)),'linewidth',2,'color','g')
 plot(w, mag2db(abs(bq3)),'linewidth',2,'color','g')
 plot(w, mag2db(abs(bq4)),'linewidth',2,'color','g')
 plot(w, mag2db(abs(bq5)),'linewidth',2,'color','g')
 plot(w, mag2db(abs(bq6)),'linewidth',2,'color','g')
 plot(w, mag2db(abs(bq7)),'linewidth',2,'color','g')
+title('');
 
 %% V 1
 load('vowels.mat');
