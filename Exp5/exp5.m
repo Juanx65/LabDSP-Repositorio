@@ -315,8 +315,8 @@ plot(w1,test_signal);
 hold on
 plot(w2,senal_sintetizada,'LineWidth',1.5);
 legend({'señal original','senal sintetizada'},'Location','southwest');
-audiowrite('senal.wav',senal_sintetizada,fs);
-audiowrite('senal_original.wav',test_signal,fs);
+%audiowrite('my_test_signal.wav',senal_sintetizada,fs);
+%audiowrite('senal_original.wav',test_signal,fs);
 %% Funciones
 
 function X = exciteV (N, Np)
