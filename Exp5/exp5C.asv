@@ -34,7 +34,7 @@ plot(w_vector,mag2db(sp_U))
 plot(w_vector,mag2db(abs(ulpc)),'LineWidth',2)
 plot(w_vector,mag2db(abs(ulpc2)),'LineWidth',2)
 title('Espectro de vocal U');xlabel('Frecuencia Rad/muestra');ylabel('Amplitud dB');
-legend("Espectro vocal U","LPC orden 15","LPC orden 2");
+legend("Respuesta del filtro U","LPC orden 15","LPC orden 2");
 
 figure
 sp_A = positiveSpectrum(vowel_a);
@@ -44,8 +44,8 @@ hold on
 plot(w_vector,mag2db(sp_A))
 plot(w_vector,mag2db(abs(alpc)),'LineWidth',2)
 plot(w_vector,mag2db(abs(alpc2)),'LineWidth',2)
-title('Espectro de vocal A');xlabel('Frecuencia Rad/muestra');ylabel('Amplitud dB');
-legend("Espectro vocal A","LPC orden 15","LPC orden 2");
+
+legend("Respuesta del filtro A","LPC orden 15","LPC orden 2");
 
 %% zplane
 figure
