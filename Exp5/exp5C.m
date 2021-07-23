@@ -1,8 +1,10 @@
 %% IV 1
 load('vowels.mat');
 sp_A = positiveSpectrum(vowel_a);
-w_vector = linspace(0,pi,length(sp_A));
-plot(w_vector,sp_A)
+N = length(sp_A);
+w_vector = linspace(0,pi,N/2);
+plot(w_vector,mag2db(sp_A(1:N/2)))
+title('Espectro de vocal a');xlabel('Frecuencia Rad/muestra');ylabel('Amplitud dB');
 
 %% IV 2
 fs=8000;
