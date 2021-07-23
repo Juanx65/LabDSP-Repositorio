@@ -161,25 +161,34 @@ load('vowels.mat');
 lpccoef = lpc(vowel_a,15);
 [h1,w1] = freqz(lpccoef,1,8001);
 [h2,w2] = freqz(1,lpccoef,8001);
+figure
 plot(w1,abs(h1))
 hold on
 plot(w2,abs(h2))
+title('filtro inverso vs AR orden 15 vocal a');ylabel('Amplitud');xlabel('Frecuencia Rad/muestra');
+legend('filtro AR orden 15','filtro inverso');
 
 %% V 2
 residuo = filter(lpccoef,1,vowel_a);
 plot(residuo)
-
+title('Residuo para vocal a');xlabel('Tiempo muestras');ylabel('Amplitud');
 %% V 3
 figure
+subplot 211
 plot(positiveSpectrum(residuo))
-figure
+title('Espectro del Residuo para vocal a');xlabel('Frecuencia sps');ylabel('Amplitud');
+subplot 212
 plot(positiveSpectrum(vowel_a))
-
+title('Espectro de vocal a');xlabel('Frecuencia sps');ylabel('Amplitud');
 %% V 4
 cor = xcorr(residuo);
 cor2 = xcorr(vowel_a);
+subplot 211
 plot(-1000:1000,cor(15000:17000))
+title('Autocorrelación del residuo');ylabel('Amplitud');xlabel('Tiempo muestras');
+subplot 212
 plot(-1000:1000,cor2(15000:17000))
+title('Autocorrelación de vocal a');ylabel('Amplitud');xlabel('Tiempo muestras');
 %% Funciones
 
 function Y = positiveSpectrum(X)
