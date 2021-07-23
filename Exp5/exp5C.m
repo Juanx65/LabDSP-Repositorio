@@ -49,15 +49,52 @@ legend("Espectro vocal A","LPC orden 15","LPC orden 2");
 
 %% zplane
 figure
+subplot 221
 zplane(1,a)
-figure
+title('zplane filtro vocal a orden 15');
+subplot 222
 zplane(1,a2)
-figure
+title('zplane filtro vocal a orden 2');
+subplot 223
 zplane(1,u)
-figure
+title('zplane filtro vocal u orden 15');
+subplot 224
 zplane(1,u2)
+title('zplane filtro vocal u orden 2');
 
-%% IV 3 
+%% IV 3 a
+load('vowels.mat');
+chosen_vowel = vowel_a;
+p1=15;
+p2=9;
+X = exciteV(fs*0.5,fs/100);
+
+lpc1=lpc(chosen_vowel,p1);
+lpc2=lpc(chosen_vowel,p2);
+
+vowel_sint_1 = filter(1,lpc1,X);
+vowel_sint_2 = filter(1,lpc2,X);
+w1 = linspace(-pi,pi,length(chosen_vowel));
+w2 = linspace(-pi,pi,length(X));
+soundsc(vowel_sint_1,fs)
+pause(1)
+soundsc(vowel_sint_2,fs)
+figure
+plot(w1, mag2db(abs(fft(chosen_vowel))))
+hold on
+plot(w2, mag2db(abs(fft(vowel_sint_1))))
+plot(w2, mag2db(abs(fft(vowel_sint_2))))
+title('Magnitud del espectro vocal a sintetizada');xlabel('Frecuencia Rad/muestra');ylabel('amplitud dB');
+legend('vocal a','Vocal sintetizada filtro orden 15','Vocal sintetizada filtro orden 9')
+
+figure
+subplot 121
+zplane(1,lpc1);
+title('zplane filtro vocal a orden 15');
+subplot 122
+zplane(1,lpc2);
+title('zplane filtro vocal a orden 9');
+%% IV 3 u
 load('vowels.mat');
 chosen_vowel = vowel_u;
 p1=15;
@@ -79,11 +116,16 @@ plot(w1, mag2db(abs(fft(chosen_vowel))))
 hold on
 plot(w2, mag2db(abs(fft(vowel_sint_1))))
 plot(w2, mag2db(abs(fft(vowel_sint_2))))
-figure
-zplane(1,lpc1);
-figure
-zplane(1,lpc2);
+title('Magnitud del espectro vocal u sintetizada');xlabel('Frecuencia Rad/muestra');ylabel('amplitud dB');
+legend('vocal u','Vocal sintetizada filtro orden 15','Vocal sintetizada filtro orden 9')
 
+figure
+subplot 121
+zplane(1,lpc1);
+title('zplane filtro vocal u orden 15');
+subplot 122
+zplane(1,lpc2);
+title('zplane filtro vocal u orden 11');
 %% IV 3 2
 load('vowels.mat');
 chosen_vowel = vowel_a;
