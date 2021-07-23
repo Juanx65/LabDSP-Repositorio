@@ -6,22 +6,11 @@ X = exciteV(N,Np);
 t = 0:1/fs:1-1/fs;
 Y = fft(X);
 w = linspace(0,fs/2,N/2);
-<<<<<<< HEAD
-plot(w,abs(Y(1:N/2)));
-title('Magnitud del Espectro');
-xlabel('Frecuencia sps');
-ylabel('Amplitud')
-figure
-plot(w,20*log10(abs(Y(1:N/2)+10^(-30))));
-title('Amplitud del Espectro en dB');
-xlabel('Frecuencia sps');
-ylabel('Amplitud dB')
-=======
+
 %plot(w,abs(Y(1:N/2)));
 figure
 plot(w,mag2db(abs(Y(1:N/2)+10^-30  ))); % 10^-30 porque sino no grafica.
 title('Magnitud del espectro');xlabel('Frecuencia sps');ylabel('Amplitud dB');
->>>>>>> 13ac66d0c94d8418a2a811e4c9a3589bc03622ef
 
 %% 1.2
 load('vowels.mat');
@@ -106,9 +95,7 @@ plot(w(1:N/2),20*log10(abs(O_sint(1:N/2))));
 title('Magnitud del vocal o');xlabel('Frecuencia sps');ylabel('Amplitud');
 u = lpc(vowel_u,15);
 u_sint = filter(1,u,X);
-<<<<<<< HEAD
-plot(a_sint)
-=======
+
 U_sint = fft(u_sint);
 subplot  515
 plot(w(1:N/2),20*log10(abs(U_sint(1:N/2))));
@@ -119,7 +106,6 @@ title('Magnitud del vocal u');xlabel('Frecuencia sps');ylabel('Amplitud');
 %audiowrite("matlab_vowel_i.wav",i_sint,fs);
 %audiowrite("matlab_vowel_o.wav",o_sint,fs);
 %audiowrite("matlab_vowel_u.wav",u_sint,fs);
->>>>>>> 13ac66d0c94d8418a2a811e4c9a3589bc03622ef
 
 %% 1.4
 
@@ -221,7 +207,7 @@ title('Magnitud del vocal u');xlabel('Frecuencia sps');ylabel('Amplitud');
 %% 2
 load('test_training_signals.mat');
 plot(training_signal);
-[x1,y1]=ginput;
+%[x1,y1]=ginput;
 hold on
 plot(x1(1):x1(2),training_signal(x1(1):x1(2)),'color','red');
 plot(x1(3):x1(4),training_signal(x1(3):x1(4)),'color','red');
@@ -230,7 +216,7 @@ plot(x1(5):x1(6),training_signal(x1(5):x1(6)),'color','red');
 plot(x2(1):x2(2),training_signal(x2(1):x2(2)),'color','green');
 plot(x2(3):x2(4),training_signal(x2(3):x2(4)),'color','green');
 plot(x2(5):x2(6),training_signal(x2(5):x2(6)),'color','green');
-plot(x2(7):length(training_signal),training_signal(x2(7):length(training_signal)),'color','green');
+plot(x2(7):x2(8),training_signal(x2(7):x2(8)),'color','green');
 
 %% 2
 load('test_training_signals.mat');
@@ -278,9 +264,8 @@ scatter(rms(silencio3),cruces_cero(silencio3),'blue');
 xlabel('RMS de la señal');
 ylabel('Cruces de cero por milisegundo')
 
-%% 3 
+%% 2.2
 load('test_training_signals.mat');
-%plot(test_signal);
 VUS = zeros([length(test_signal),1]);
 for i=1:0.02*fs:length(test_signal)
     frame = test_signal(i:i+min(0.02*fs-1,length(test_signal)-i));
@@ -288,9 +273,9 @@ for i=1:0.02*fs:length(test_signal)
 end
 plot(test_signal);
 hold on
-plot(VUS)
+stairs(VUS)
 
-%% 3.2
+%% 3.1
 VUS_vector = zeros([1,ceil(length(test_signal)/(0.02*fs))]);
 RMS_vector = zeros([1,ceil(length(test_signal)/(0.02*fs))]);
 lpc_matrix = zeros([16,ceil(length(test_signal)/(0.02*fs))]);
@@ -359,7 +344,7 @@ function X = exciteV (N, Np)
  end
 
  function y = find_VUS(x)
-    if(rms(x)<0.013)
+    if(rms(x)<0.02)
         y = 0;
     else
         if(cruces_cero(x)>2.4 && rms(x)<0.06)
