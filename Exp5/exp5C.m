@@ -1,9 +1,7 @@
 %% IV 1
 load('vowels.mat');
-sp_A = positiveSpectrum(vowel_a);
-N = length(sp_A);
-w_vector = linspace(0,pi,N/2);
-plot(w_vector,mag2db(sp_A(1:N/2)))
+[sp_A,w_vector] = positiveSpectrum(vowel_a);
+plot(w_vector,mag2db(sp_A(1:N)))
 title('Espectro de vocal a');xlabel('Frecuencia Rad/muestra');ylabel('Amplitud dB');
 
 %% IV 2
@@ -23,10 +21,8 @@ a2_sint = filter(1,a2,X);
 u2 = lpc(vowel_u,2);
 u2_sint = filter(1,u2,X);
 
-w_vector = linspace(0,pi,length(sp_A));
-
 figure
-sp_U = positiveSpectrum(vowel_u);
+[sp_U,w_vector] = positiveSpectrum(vowel_u);
 [ulpc,~] = freqz(1,u,8001);
 [ulpc2,~] = freqz(1,u2,8001);
 hold on
@@ -37,7 +33,7 @@ title('Espectro de vocal U');xlabel('Frecuencia Rad/muestra');ylabel('Amplitud d
 legend("Espectro vocal U","LPC orden 15","LPC orden 2");
 
 figure
-sp_A = positiveSpectrum(vowel_a);
+[sp_A,w_vector] = positiveSpectrum(vowel_a);
 [alpc,~] = freqz(1,a,8001);
 [alpc2,~] = freqz(1,a2,8001);
 hold on
@@ -166,7 +162,7 @@ plot(w1,abs(h1))
 hold on
 plot(w2,abs(h2))
 title('filtro inverso vs AR orden 15 vocal a');ylabel('Amplitud');xlabel('Frecuencia Rad/muestra');
-legend('filtro AR orden 15','filtro inverso');
+legend('filtro inverso','filtro AR orden 15');
 
 %% V 2
 residuo = filter(lpccoef,1,vowel_a);
@@ -191,9 +187,11 @@ plot(-1000:1000,cor2(15000:17000))
 title('Autocorrelación de vocal a');ylabel('Amplitud');xlabel('Tiempo muestras');
 %% Funciones
 
-function Y = positiveSpectrum(X)
+function [Y,w] = positiveSpectrum(X)
 Spectrum = abs(fft(X));
 Y = Spectrum(1:floor(length(X)/2)+1);
+N = length(Y);
+w = linspace(0,pi,N);
 end
 
 function X = exciteV (N, Np)
