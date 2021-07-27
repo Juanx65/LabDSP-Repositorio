@@ -16,45 +16,36 @@ title('Magnitud del espectro');xlabel('Frecuencia sps');ylabel('Amplitud dB');
 load('vowels.mat');
 [vowels,fs] = audioread("vowel_a_16_8.wav");
 filtro_a = lpc(vowel_a,15);
-A=0;
 w = linspace(0,fs,N);
-[A,~]freqz(1,u,8001);
+[A,~] = freqz(1,filtro_a,N/2);
 figure
 plot(w(1:N/2),abs(A(1:N/2)));
 
 filtro_e = lpc(vowel_e,15);
 E=0;
 w = linspace(0,fs,N);
-for i=1:1:16
-    E=E+filtro_e(i).*exp(-1j*2*pi*w*(i-1));
-end
+[E,~] = freqz(1,filtro_e,N/2);
 hold on
 plot(w(1:N/2),abs(E(1:N/2)));
 
 filtro_i = lpc(vowel_i,15);
 I=0;
 w = linspace(0,fs,N);
-for i=1:1:16
-    I=I+filtro_i(i).*exp(-1j*2*pi*w*(i-1));
-end
+[I,~] = freqz(1,filtro_i,N/2);
 
 plot(w(1:N/2),abs(I(1:N/2)));
 
 filtro_o = lpc(vowel_o,15);
 O=0;
 w = linspace(0,fs,N);
-for i=1:1:16
-    O=O+filtro_o(i).*exp(-1j*2*pi*w*(i-1));
-end
+[O,~] = freqz(1,filtro_o,N/2);
 
 plot(w(1:N/2),abs(O(1:N/2)));
 
 filtro_u = lpc(vowel_u,15);
 U=0;
 w = linspace(0,fs,N);
-for i=1:1:16
-    U=U+filtro_u(i).*exp(-1j*2*pi*w*(i-1));
-end
+[U,~] = freqz(1,filtro_u,N/2);
 
 plot(w(1:N/2),abs(U(1:N/2)));
 legend("a","e","i","o","u");
@@ -115,45 +106,35 @@ load('vowels.mat');
 filtro_a = mylpc(vowel_a,15);
 A=0;
 w = linspace(0,fs,N);
-for i=1:1:16
-    A=A+filtro_a(i).*exp(-1j*2*pi*w*(i-1));
-end
+[A,~] = freqz(1,filtro_a,N/2);
 
 plot(w(1:N/2),abs(A(1:N/2)));
 
 filtro_e = mylpc(vowel_e,15);
 E=0;
 w = linspace(0,fs,N);
-for i=1:1:16
-    E=E+filtro_e(i).*exp(-1j*2*pi*w*(i-1));
-end
+[E,~] = freqz(1,filtro_e,N/2);
 hold on
 plot(w(1:N/2),abs(E(1:N/2)));
 
 filtro_i = mylpc(vowel_i,15);
 I=0;
 w = linspace(0,fs,N);
-for i=1:1:16
-    I=I+filtro_i(i).*exp(-1j*2*pi*w*(i-1));
-end
+[I,~] = freqz(1,filtro_i,N/2);
 
 plot(w(1:N/2),abs(I(1:N/2)));
 
 filtro_o = mylpc(vowel_o,15);
 O=0;
 w = linspace(0,fs,N);
-for i=1:1:16
-    O=O+filtro_o(i).*exp(-1j*2*pi*w*(i-1));
-end
+[O,~] = freqz(1,filtro_o,N/2);
 
 plot(w(1:N/2),abs(O(1:N/2)));
 
 filtro_u = mylpc(vowel_u,15);
 U=0;
 w = linspace(0,fs,N);
-for i=1:1:16
-    U=U+filtro_u(i).*exp(-1j*2*pi*w*(i-1));
-end
+[U,~] = freqz(1,filtro_u,N/2);
 
 plot(w(1:N/2),abs(U(1:N/2)));
 legend("a","e","i","o","u");
